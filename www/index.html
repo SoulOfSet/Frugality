@@ -33,16 +33,21 @@
     <script src="cordova.js"></script>
     <script src="scripts/index.js"></script>
     <!-- -->
-        <ons-page>
-            <ons-toolbar>
-                <div class="center">Frugality</div>
-            </ons-toolbar>
-            <ons-row style="margin-top: 100px; text-align: center;">
-                <ons-col>
-                    <p>Sample Text</p>
-                </ons-col>
-            </ons-row>
-        </ons-page>
+        <ons-navigator var="parentNavigator">
+    
+        <div id="IndexPage">
+            <ons-icon size="5x" icon="ion-load-c" spin="true"></ons-icon>
+            <p>Loading...</p>
+        </div>
+        <script>
+            //Ready listener
+            document.addEventListener("deviceready", onDeviceReady, true);           
+           
+            function onDeviceReady() {
+                
+            }
+        </script>
+    </ons-navigator>
 
 </body>
 </html>
