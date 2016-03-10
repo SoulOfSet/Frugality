@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- CSP support mode (required for Windows Universal apps): https://docs.angularjs.org/api/ng/directive/ngCsp -->
+<html lang="en" ng-app="Frugality" ng-csp>
+<head>
+    <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- JS dependencies (order matters!) -->
+    <script src="scripts/platformOverrides.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/onsen/js/onsenui.js"></script>
+
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components-blue-basic-theme.css" />
+
+    <!-- CSP support mode (required for Windows Universal apps) -->
+    <link rel="stylesheet" href="lib/angular/angular-csp.css" />
+
+
+    <!-- --------------- App init --------------- -->
+
+    <title>Onsen UI Sliding Menu</title>
+
+    <script>
+        angular.module('Frugality', ['onsen']);
+    </script>
+</head>
+
+<body>
+    <!-- Cordova reference -->
+    <script src="cordova.js"></script>
+    <script src="scripts/index.js"></script>
+    <!-- -->
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Frugality</div>
+            </ons-toolbar>
+            <ons-row style="margin-top: 100px; text-align: center;">
+                <ons-col>
+                    <p>Sample Text</p>
+                </ons-col>
+            </ons-row>
+        </ons-page>
+
+</body>
+</html>
