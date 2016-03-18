@@ -1,0 +1,28 @@
+<ons-page ng-controller="tabHostController">
+    <div id="HomePage">
+        <ons-toolbar fixed-style="true">
+            <div class="left">
+                <ons-toolbar-button ng-click="menu.toggleMenu()">
+                    <ons-icon icon="ion-navicon" style="font-size: 32px; width: 1em;"></ons-icon>
+                </ons-toolbar-button>
+            </div>
+            <div class="center">Frugality</div>
+        </ons-toolbar>
+
+        <ons-tabbar position="top">
+            <ons-tab page="tabs/search.html" active="true">
+                <ons-icon icon="ion-search"></ons-icon>
+                <span style="font-size: 14px"></span>
+            </ons-tab>
+            <ons-tab page="tabs/watching.html" active="false">
+                <ons-icon icon="ion-eye"></ons-icon>
+                <span style="font-size: 14px"></span>
+            </ons-tab>
+            <ons-tab page="" active="false">
+                <ons-icon icon="ion-help"></ons-icon>
+                <span style="font-size: 14px"></span>
+            </ons-tab>
+        </ons-tabbar>
+
+    </div>
+</ons-page>
