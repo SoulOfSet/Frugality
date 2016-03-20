@@ -64,6 +64,7 @@ var retailigence = function(key, id, onSuccess, onFail){
                 console.log(data);
                 isTasking = false;
                 doSuccess();
+                authenticated = true;
                 return data;
             },
             error: function(data) {
@@ -84,69 +85,145 @@ var retailigence = function(key, id, onSuccess, onFail){
     };
 
     //Setter for the JSON variable
-    this.setJSON = function(key){
-        jsonData = key;
+    this.setJSON = function(data){
+        jsonData = data;
+    };
+
+    //Setter for location. If y = null it will assume it s a zip code. If not it will act as coordinates
+    this.setLocation = function(x, y){
+        if(y = null){//Zip
+            userLocation = x;
+        }
+        else{//Coords
+            userLocation = x + "," + y;
+        }
+    };
+
+    //Search function
+    this.search = function(query){
+        if(!authenticated){
+            console.log("retailigence.js: Application was not authenticated with the API");
+            errorMessage = "Not authenticated with the API";
+            return false;
+        }
+        else if(userLocation == null || searchType == null){
+            console.log("retailigence.js: User location and search method must be set for this to work");
+            errorMessage = "User location and search method must be set for this to work";
+            return false;
+        }
+        else{
+            var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query);
+            console.log(url);
+            var swag = downloadJSON(url);
+            console.log(swag);
+        }
+    };
+
+
+    //Search type
+    this.setSearchType = function(type){
+        if(type != "name" && type != "keywords" && type != "productID"){
+            errorMessage = "Invalid search method was passed to the setSearch method. Valid search methods are: name, keyword, UPC/EAN/SKU";
+            console.log("retailigence.js: There was an invalid selection pertaining to search methods. Check your documentation");
+        }
+        else{
+            searchType = type;
+            console.log("retailigence.js: Search type changed to " + type);
+        }
     };
 
     //Getter for any param value with error check
-    this.getExtraParam = function(key){
-        if(extraParams.hasOwnProperty(key)) {
-            return extraParams[key];
-        }
-        else{
-            errorMessage = "Error - Extra parameter key " + key + " does not exist";
-            return false;
-        }
-    };
+        this.getExtraParam = function(key){
+            if(extraParams.hasOwnProperty(key)) {
+                return extraParams[key];
+            }
+            else{
+                errorMessage = "Error - Extra parameter key " + key + " does not exist";
+                return false;
+            }
+        };
 
-    //Setting for any extra param value with error check. Big deal ;p
-    this.editExtraParam = function(editType, key, value){
-        var tempString;
+        //Setting for any extra param value with error check. Big deal ;p
+        this.editExtraParam = function(editType, key, value){
+            var tempString;
 
-        if(!extraParams.hasOwnProperty(key)) {
-            console.log("retailigence.js: Error - Attempt to edit extra parameters with key that doesn't exist");
-            errorMessage = "Error - Attempt to edit extra parameters with key that doesn't exist";
-            return false;
-        }
-        else if(editType = "add"){
-            console.log("retailigence.js: Attempting to add value " + value + " to key " + key);
+            if(!extraParams.hasOwnProperty(key)) {
+                console.log("retailigence.js: Error - Attempt to edit extra parameters with key that doesn't exist");
+                errorMessage = "Error - Attempt to edit extra parameters with key that doesn't exist";
+                return false;
+            }
+            //ADD
+            else if(editType == "add"){
+                console.log("retailigence.js: Attempting to add value " + value + " to key " + key);
 
 
-            if(extraParams[key] != null){//The key value already has some data that we need to add to
+                if(extraParams[key] != null){//The key value already has some data that we need to add to
 
-                //Make sure the data theyre trying to add isnt already in there
-                var dataExist = false;
-                tempString = extraParams[key];
-                var splitString = tempString.split(',');
-                for (var i = 0; i < splitString.length; i++) {
-                    var stringPart = splitString[i];
-                    if (stringPart != value) continue; //It is not
-                    dataExist = true; //It is omg...
-                    break;
+                    //Make sure the data theyre trying to add isnt already in there
+                    var dataExist = false;
+                    tempString = extraParams[key];
+                    var splitString = tempString.split(',');
+                    for (var i = 0; i < splitString.length; i++) {
+                        var stringPart = splitString[i];
+                        if (stringPart != value) continue; //It is not
+                        dataExist = true; //It is omg...
+                        break;
+                    }
+                    if(!dataExist){ //If the data isnt already there go ahead and add it
+                        tempString += "+" + value;
+                        extraParams[key] = tempString;
+                        console.log("retailigence.js: Value " + value + " added to key " + key);
+                        return true;
+                    }
+                    else{
+                        console.log("retailigence.js: Value " + value + " already exists in key " + key);
+                        errorMessage = "retailigence.js: Value " + value + " already exists in key " + key;
+                        return false;
+
+                    }
                 }
-                if(!dataExist){ //If the data isnt already there go ahead and add it
-                    tempString += "+" + value;
-                    extraParams[key] = tempString;
+                else{
+                    extraParams[key] = value;
                     console.log("retailigence.js: Value " + value + " added to key " + key);
                     return true;
                 }
-                else{
-                    console.log("retailigence.js: Value " + value + " already exists in key " + key);
-                    errorMessage = "retailigence.js: Value " + value + " already exists in key " + key;
-                    return false;
-
+            }
+            //Replace all with one
+            else if(editType == "replace"){
+                console.log("retailigence.js: Replacing all values within key " + key + " with value " + value)
+                extraParams[key] = value;
+                return true;
+            }
+            //Clear the value and replace with null
+            else if(editType == "clear"){
+                console.log("retailigence.js: Setting key " + key + " with value of null");
+                extraParams[key] = null;
+                return true;
+            }
+            //Remove just one value
+            else if(editType == "remove"){
+                if(extraParams[key] != null){
+                    tempString = extraParams[key];
+                    if(tempString.substr(0, value.length+1).trim() == value + "+"){ //If that value is up front
+                        tempString = tempString.replace(value + "+", "");
+                        extraParams[key] = tempString;
+                        console.log("retailigence.js: Value " + value + " removed from key " + key);
+                    }
+                    else if(tempString.indexOf("+") > 0){ //If the value is not up front
+                        tempString = tempString.replace("+" + value, "");
+                        extraParams[key] = tempString;
+                        console.log("retailigence.js: Value " + value + " removed from key " + key);
+                    }
+                    else{ //If its the last value
+                        console.log("retailigence.js: Key " + key + " has had all values removed and is now null");
+                        extraParams[key] = null;
+                    }
                 }
             }
             else{
-                extraParams[key] = value;
-                console.log("retailigence.js: Value " + value + " added to key " + key);
-                return true;
+                return "true";
             }
-        }
-        else{
-            return "true";
-        }
-    };
+        };
 
     //Getter for any error message
     this.getErrorMessage = function(){
