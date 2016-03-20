@@ -1,3 +1,7 @@
-<ons-page>
+<ons-page ng-controller="searchController">
     <div class="center"><input type="search" class="search-input" placeholder="Keyword"></input></div>
+    <ons-button modifier="outline" ng-click="search()">
+        <ons-ripple></ons-ripple>
+        Search
+    </ons-button>
 </ons-page>
