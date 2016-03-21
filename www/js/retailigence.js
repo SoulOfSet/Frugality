@@ -91,7 +91,7 @@ var retailigence = function(key, id, onSuccess, onFail){
 
     //Setter for location. If y = null it will assume it s a zip code. If not it will act as coordinates
     this.setLocation = function(x, y){
-        if(y = null){//Zip
+        if(y == null){//Zip
             userLocation = x;
         }
         else{//Coords
@@ -112,7 +112,7 @@ var retailigence = function(key, id, onSuccess, onFail){
             return false;
         }
         else{
-            var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query);
+            var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query, null, null);
             console.log(url);
             var swag = downloadJSON(url);
             console.log(swag);
