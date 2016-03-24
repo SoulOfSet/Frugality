@@ -1,11 +1,52 @@
-var data;
+var zipReg = /^\d{5}$/;
 
 //home.html functions
 app.controller("tabHostController", function($scope) {
-    if(localStorage.getItem("hasRun") == null){
-        ons.createDialog('intro_dialog.html').then(function(dialog) {
+    var data = localStorage.getItem("hasRun");
+    if(data == "false"){
+        ons.createDialog('/top/dialogs/intro_dialog.html').then(function(dialog) {
             dialog.show();
         });
+    }
+});
+
+//intro_dialog.html functions
+app.controller("introDialogController", function($scope){
+    $scope.setLocationPref = function(button){
+        if(button == 0){
+            introDialog.hide();
+            ons.createDialog('/top/dialogs/enter_zip.html').then(function(dialog) {
+                dialog.show();
+            });
+        }
+        else{
+           updateGPSData(function(){
+               localStorage.setItem("prefLocationType", "GPS");
+               localStorage.setItem("hasRun", true);
+               introDialog.hide();
+           });
+        }
+    }
+});
+
+//enter_zip.html functions
+app.controller("introDialogZipController", function($scope){
+    $scope.validateZip = function(){
+        if(!zipReg.test($scope.Zip)){
+            $scope.ZipError = "Please enter a valid zip code";
+        }
+        else{
+            localStorage.setItem("prefLocationType", "zip");
+            updateZip($scope.zip);
+            console.log("Preferred location type changed to zip code with stored value of zip changed to " + $scope.Zip);
+            $scope.ZipError = "";
+            //Make sure this doesn't pop up again
+            localStorage.setItem("hasRun", true);
+            introDialogZip.hide();
+            ons.createDialog('/top/dialogs/thank_you.html').then(function(dialog) {
+                dialog.show();
+            });
+        }
     }
 });
 
@@ -21,42 +62,10 @@ app.controller("searchController", function($scope){
 
 //settings.html functions
 app.controller("settingsController", function($scope){
-
+    $scope.setLocationPref = function(){
+        ons.createDialog('/top/dialogs/intro_dialog.html').then(function(dialog) {
+            dialog.show();
+        });
+    }
 });
 
-//intro_dialog.html functions
-app.controller("introDialogController", function($scope){
-   $scope.setLocationPref = function(button){
-        if(button == 0){
-            introDiag.hide();
-            ons.createDialog('enter_zip.html').then(function(dialog) {
-                dialog.show();
-            });
-        }
-       else{
-            console.log("do me");
-        }
-   }
-});
-
-//enter_zip.html functions
-app.controller("introDialogZipController", function($scope){
-    $('#ZipInput').formValidation({
-            framework: 'bootstrap',
-            icon: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                postalCode: {
-                    validators: {
-                        zipCode: {
-                            country: 'countrySelectBox',
-                            message: 'The value is not valid %s postal code'
-                        }
-                    }
-                }
-            }
-        })
-});
