@@ -14,5 +14,4 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <plugin name="Geolocation" value="org.apache.cordova.GeoBroker" />
 </widget>
