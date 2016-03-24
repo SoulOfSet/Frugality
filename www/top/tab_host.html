@@ -18,43 +18,10 @@
                 <ons-icon icon="ion-eye"></ons-icon>
                 <span style="font-size: 14px"></span>
             </ons-tab>
-            <ons-tab page="" active="true">
+            <ons-tab ng-click="localStorage.clear()" page="" active="true">
                 <ons-icon icon="ion-help"></ons-icon>
                 <span style="font-size: 14px"></span>
             </ons-tab>
         </ons-tabbar>
     </div>
 </ons-page>
-
-
-<ons-template id="intro_dialog.html" >
-    <ons-dialog var="introDiag" ng-controller="introDialogController" cancelable>
-        <ons-toolbar inline>
-            <div class="center">
-                Welcome to Frugality
-            </div>
-        </ons-toolbar>
-            <div id="ChooseType">
-                <div class="center">
-                    <p style="text-align: center">Please choose your preferred locating method</p>
-                    <p><ons-button modifier="large" ng-click="setLocationPref(0)">Enter Zip</ons-button></p>
-                    <p><ons-button modifier="large" ng-click="setLocationPref(1)">Use GPS</ons-button></p>
-                </div>
-            </div>
-    </ons-dialog>
-</ons-template>
-
-<ons-template id="enter_zip.html">
-    <ons-dialog var="introDiagZip" ng-controller="introDialogZipController" cancelable>
-        <ons-toolbar inline>
-            <div class="center">
-                Welcome to Frugality
-            </div>
-        </ons-toolbar>
-        <div id="ChooseZip">
-            <div class="center">
-                <input type="text" id="ZipInput" class="text-input" placeholder="Enter Zip Code"></input>
-            </div>
-        </div>
-    </ons-dialog>
-</ons-template>

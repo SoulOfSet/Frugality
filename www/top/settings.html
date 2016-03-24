@@ -1,20 +1,23 @@
 <ons-page ng-controller="settingsController">
-    <ons-toolbar>
-        <div class="left"><ons-back-button>Account</ons-back-button></div>
-        <div class="center">Settings</div>
+    <ons-toolbar fixed-style="true">
+        <div class="left">
+            <ons-toolbar-button ng-click="menu.toggleMenu()">
+                <ons-icon icon="ion-navicon" style="font-size: 32px; width: 1em;"></ons-icon>
+            </ons-toolbar-button>
+        </div>
     </ons-toolbar>
     <div class="settings-header">Location</div>
     <ons-list modifier="inset" class="settings-list">
-        <ons-list-item modifier="chevron">
+        <ons-list-item modifier="tappable" ng-click="setLocationPref()">
             Set Preferred Location
         </ons-list-item>
     </ons-list>
     <div class="settings-header">Others</div>
     <ons-list modifier="inset" class="settings-list">
-        <ons-list-item modifier="chevron">
+        <ons-list-item modifier="tappable">
             Terms of Use
         </ons-list-item>
-        <ons-list-item modifier="chevron">
+        <ons-list-item modifier="tappable">
             About
         </ons-list-item>
     </ons-list>

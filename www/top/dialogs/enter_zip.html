@@ -1,0 +1,15 @@
+<ons-page id="enter_zip.html">
+    <ons-dialog var="introDialogZip" ng-controller="introDialogZipController">
+        <ons-toolbar inline>
+            <div class="center">
+                Welcome to Frugality
+            </div>
+        </ons-toolbar>
+        <div class="center">
+            <p style="text-align: center">Please Enter Your Zip Code</p>
+            <input style="width: 100%" ng-model="Zip" type="text" class="text-input" placeholder="Zip" />
+            <p class="error-message" style="color: #ff3e19; text-align: center">{{ZipError}}</p>
+            <p><ons-button modifier="large" ng-click="validateZip()">Submit</ons-button></p>
+        </div>
+    </ons-dialog>
+</ons-page>
