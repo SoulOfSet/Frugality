@@ -27,23 +27,33 @@
 </ons-page>
 
 
-<ons-template id="intro_dialog.html" ng-controller="introDialogController">
-    <ons-dialog var="introDiag" cancelable>
+<ons-template id="intro_dialog.html" >
+    <ons-dialog var="introDiag" ng-controller="introDialogController" cancelable>
         <ons-toolbar inline>
             <div class="center">
                 Welcome to Frugality
             </div>
         </ons-toolbar>
-        <div id="ChooseType">
-            <div class="center">
-                <p style="text-align: center">Please choose your preferred locating method</p>
-                <p><ons-button modifier="large" ng-click="setLocationPref(0)">Enter Zip</ons-button></p>
-                <p><ons-button modifier="large" ng-click="setLocationPref(1)">Use GPS</ons-button></p>
+            <div id="ChooseType">
+                <div class="center">
+                    <p style="text-align: center">Please choose your preferred locating method</p>
+                    <p><ons-button modifier="large" ng-click="setLocationPref(0)">Enter Zip</ons-button></p>
+                    <p><ons-button modifier="large" ng-click="setLocationPref(1)">Use GPS</ons-button></p>
+                </div>
             </div>
-        </div>
-        <div id="ChooseZip" style="display: none;">
+    </ons-dialog>
+</ons-template>
+
+<ons-template id="enter_zip.html">
+    <ons-dialog var="introDiagZip" ng-controller="introDialogZipController" cancelable>
+        <ons-toolbar inline>
             <div class="center">
-                <input type="number" class="text-input" placeholder="Enter Zip Code"></input>
+                Welcome to Frugality
+            </div>
+        </ons-toolbar>
+        <div id="ChooseZip">
+            <div class="center">
+                <input type="text" pattern="[0-9]{6}" class="text-input" placeholder="Enter Zip Code"></input>
             </div>
         </div>
     </ons-dialog>

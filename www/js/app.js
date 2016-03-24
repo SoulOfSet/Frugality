@@ -27,13 +27,37 @@ app.controller("settingsController", function($scope){
 //intro_dialog.html functions
 app.controller("introDialogController", function($scope){
    $scope.setLocationPref = function(button){
-       console.log("sawg");
         if(button == 0){
-            $("#ChooseType").hide();
-            $("#ChooseZip").show();
+            introDiag.hide();
+            ons.createDialog('enter_zip.html').then(function(dialog) {
+                dialog.show();
+            });
         }
        else{
             console.log("do me");
         }
    }
+});
+
+//enter_zip.html functions
+app.controller("introDialogZipController", function($scope){
+    $('#zipCodeForm')
+        .formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                postalCode: {
+                    validators: {
+                        zipCode: {
+                            country: 'countrySelectBox',
+                            message: 'The value is not valid %s postal code'
+                        }
+                    }
+                }
+            }
+        })
 });
