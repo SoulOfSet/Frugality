@@ -14,7 +14,7 @@ app.controller("searchController", function($scope){
     $scope.search = function(){
         data.setSearchType("name");
         data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
-        data.search($('#txtSearch').val());
+        data.search($('#TxtSearch').val());
     }
 
 });
