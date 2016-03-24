@@ -207,7 +207,7 @@ h6 {
   transition-timing-function: cubic-bezier(0.5, 1.6, 0.5, 1);
 }
 .switch__input:checked + .switch__toggle {
-  background-color: #e69e33;
+  background-color: #7471f2;
 }
 .switch__input:checked + .switch__toggle:before {
   -webkit-transform: translateX(18px);
@@ -1018,7 +1018,7 @@ h6 {
   -o-transition: none;
   transition: none;
   border: none;
-  background-color: #f28227;
+  background-color: #7471f2;
   color: #fff;
 }
 .button--cta:hover {
@@ -1032,7 +1032,7 @@ h6 {
 }
 .button--cta:active {
   color: var-button-cat-color;
-  background-color: #f28227;
+  background-color: #7471f2;
   -webkit-transition: none;
   -moz-transition: none;
   -o-transition: none;
@@ -1231,7 +1231,7 @@ h6 {
   -o-transition: none;
   transition: none;
   border: none;
-  background-color: #f28227;
+  background-color: #7471f2;
   color: #fff;
   font-size: 17px;
   font-weight: 500;
@@ -1252,7 +1252,7 @@ h6 {
 }
 .button--large--cta:active {
   color: #fff;
-  background-color: #f28227;
+  background-color: #7471f2;
   -webkit-transition: none;
   -moz-transition: none;
   -o-transition: none;
