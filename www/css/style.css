@@ -1,4 +1,4 @@
-/*settings.html*/
+/*Settings*/
 .switch--list-item {
     margin-right: 0px;
 }
@@ -14,6 +14,14 @@
 .settings-list {
     margin-top: 10px;
 }
+
+/*onsen-dialogs*/
+ons-dialog:not([modifier='material']) p {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
 
 #IndexPage {
     background-image: url("../res/img/frugalitysplash.png");
