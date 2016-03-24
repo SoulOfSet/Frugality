@@ -41,8 +41,7 @@ app.controller("introDialogController", function($scope){
 
 //enter_zip.html functions
 app.controller("introDialogZipController", function($scope){
-    $('#zipCodeForm')
-        .formValidation({
+    $('#ZipInput').formValidation({
             framework: 'bootstrap',
             icon: {
                 valid: 'glyphicon glyphicon-ok',
