@@ -16,6 +16,6 @@ app.controller("searchController", function($scope){
 });
 
 //settings.html functions
-app.controller("settingsController", function($scope)){
-    $scope.
-}
+app.controller("settingsController", function($scope){
+
+});
