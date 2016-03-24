@@ -60,11 +60,11 @@ var retailigence = function(key, id, onSuccess, onFail){
             type: 'GET',
             //TODO: this doesn't mean necessarily they are authenticated just that a return OF SOME KIND was successful if this is the immediate constructor call. need to check that data first
             success: function(data){
-                console.log("retailigence.js: GET succeeded. Authentication was fine")
+                console.log("retailigence.js: GET succeeded")
                 isTasking = false;
-                doSuccess();
+                doSuccess(data);
                 authenticated = true;
-                return data;
+                return true;
             },
             error: function(data) {
                 console.log("retailigence.js: GET failed with error" + data);
@@ -88,7 +88,7 @@ var retailigence = function(key, id, onSuccess, onFail){
         jsonData = data;
     };
 
-    //Setter for location. If y = null it will assume it s a zip code. If not it will act as coordinates
+    //Setter for location. If y = null it will assume its a zip code. If not it will act as coordinates
     this.setLocation = function(x, y){
         if(y == null){//Zip
             userLocation = x;
@@ -112,7 +112,14 @@ var retailigence = function(key, id, onSuccess, onFail){
         }
         else{
             var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query, null, null);
-            var json = downloadJSON(url);
+            var json = downloadJSON(url, function(data){
+                console.log("retailigence.js: Search succeeded");
+                jsonData = data;
+                console.log(jsonData)
+            }, function(){
+                console.log("retailigence.js: Search failed");
+            });
+
             console.log(json)
         }
     };
