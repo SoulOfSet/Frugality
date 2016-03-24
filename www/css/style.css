@@ -24,11 +24,11 @@ ons-dialog:not([modifier='material']) p {
 
 
 #IndexPage {
-    background-image: url("../res/img/frugalitysplash.png");
+    background: url("../res/img/frugalitysplash.png") no-repeat;
     background-size: 100% 101%;
     width: 100%;
     height: 100%;
-    background-repeat: no-repeat;
+
 }
 #SplashIcon{
     color: white;
