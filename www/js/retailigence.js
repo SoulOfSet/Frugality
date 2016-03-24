@@ -60,8 +60,7 @@ var retailigence = function(key, id, onSuccess, onFail){
             type: 'GET',
             //TODO: this doesn't mean necessarily they are authenticated just that a return OF SOME KIND was successful if this is the immediate constructor call. need to check that data first
             success: function(data){
-                console.log("retailigence.js: GET succeeded")
-                console.log(data);
+                console.log("retailigence.js: GET succeeded. Authentication was fine")
                 isTasking = false;
                 doSuccess();
                 authenticated = true;
@@ -113,9 +112,8 @@ var retailigence = function(key, id, onSuccess, onFail){
         }
         else{
             var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query, null, null);
-            console.log(url);
-            var swag = downloadJSON(url);
-            console.log(swag);
+            var json = downloadJSON(url);
+            console.log(json)
         }
     };
 
@@ -139,7 +137,7 @@ var retailigence = function(key, id, onSuccess, onFail){
             }
             else{
                 errorMessage = "Error - Extra parameter key " + key + " does not exist";
-                return false;
+              return false;
             }
         };
 
