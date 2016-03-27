@@ -128,7 +128,7 @@ var retailigence = function(key, id, onSuccess, onFail){
     //Search type
     this.setSearchType = function(type){
         if(type != "name" && type != "keywords" && type != "productID"){
-            errorMessage = "Invalid search method was passed to the setSearch method. Valid search methods are: name, keyword, UPC/EAN/SKU";
+            errorMessage = "Invalid search method was passed to the setSearch method. Valid search methods are: name, keyword, productID";
             console.log("retailigence.js: There was an invalid selection pertaining to search methods. Check your documentation");
         }
         else{
