@@ -6,11 +6,13 @@
 //update GPS data in local storage
 var updateGPSData = function(callback) {
     navigator.geolocation.getCurrentPosition(function(position) {
+        console.log("GPS Updated");
         var lat = position.coords.latitude;
         var long = position.coords.longitude;
         localStorage.setItem("latitude", lat);
         localStorage.setItem("longitude", long);
         if (callback != null) {
+            console.log("swag");
             callback(true); //We were able to triangulate GPS location
         }
     }, function() {
@@ -24,4 +26,4 @@ var updateGPSData = function(callback) {
 //update zip code in local storage
 var updateZip = function(zip){
     localStorage.setItem("zip", zip);
-}
+};

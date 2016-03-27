@@ -30,6 +30,13 @@
     transform: translate(-50%, -50%);
 }
 
+#LoadingDialog{
+    height: 100%;
+    min-height: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
 /*#TxtSearch {
     position: absolute;
     top: 10%;
