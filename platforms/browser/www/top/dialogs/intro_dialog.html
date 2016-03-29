@@ -1,0 +1,26 @@
+<ons-page id="intro_dialog.html" >
+    <ons-dialog var="introDialog" ng-controller="introDialogController" cancelable>
+        <ons-toolbar inline>
+            <div class="center">
+                Welcome to Frugality
+            </div>
+        </ons-toolbar>
+        <div id="ChooseType">
+            <div class="center">
+                <div ng-hide="showChoose">
+                    <p style="text-align: center">Please choose your preferred locating method</p>
+                    <p><ons-button modifier="large" ng-click="setLocationPref(0)">Enter Zip</ons-button></p>
+                    <p><ons-button modifier="large" ng-click="setLocationPref(1)">Use GPS</ons-button></p>
+                    <p class="error-message" style="color: #ff3e19; text-align: center">{{GPSError}}</p>
+                </div>
+                <div  ng-hide="showLoad" class="ng-hide">
+                    <br>
+                    <p style="text-align: center">Please wait...</p>
+                    <p style="text-align: center">Attempting to update GPS</p>
+                </div>
+            </div>
+        </div>
+
+    </ons-dialog>
+
+</ons-page>
