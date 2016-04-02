@@ -20,7 +20,8 @@ app.controller("introDialogController", function($scope) {
             ons.createDialog('/top/dialogs/enter_zip.html').then(function(dialog) {
                 dialog.show();
             });
-        } else {
+        } 
+        else {
             $scope.showLoad = false;
             $scope.showChoose = true;
             updateGPSData(function(worked) {
@@ -34,7 +35,8 @@ app.controller("introDialogController", function($scope) {
                     ons.createDialog('/top/dialogs/thank_you.html').then(function(dialog) {
                         dialog.show();
                     });
-                } else {
+                } 
+                else {
                     $scope.showChoose = true;
                     $scope.showLoad = false;
                     $scope.GPSError = "We were not able to find your GPS location. Please check your location services";
@@ -51,9 +53,10 @@ app.controller("introDialogZipController", function($scope) {
     $scope.validateZip = function() {
         if (!zipReg.test($scope.Zip)) {
             $scope.ZipError = "Please enter a valid zip code";
-        } else {
+        } 
+        else {
             localStorage.setItem("prefLocationType", "zip");
-            updateZip($scope.zip);
+            updateZip($scope.Zip);
             console.log("Preferred location type changed to zip code with stored value of zip changed to " + $scope.Zip);
             $scope.ZipError = "";
             //Make sure this doesn't pop up again
@@ -69,9 +72,70 @@ app.controller("introDialogZipController", function($scope) {
 //search.html functions
 app.controller("searchController", function($scope) {
     $scope.search = function() {
+        $("#ResultError").html("");
         data.setSearchType("name");
-        data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
-        data.search($('#TxtSearch').val());
+        if (localStorage.getItem("prefLocationType") != null) {
+            var locationType = localStorage.getItem("prefLocationType"); //Get location type
+
+            if (locationType == "zip") { //If zip
+                console.log("User has zip set as preffered location type. Setting wrapper location to zip");
+                data.setLocation(localStorage.getItem("zip"), null);
+            } 
+            else if (locationType == "GPS") { //If GPS
+                console.log("User has GPS set as preffered location type. Setting wrapper location to GPS");
+                data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
+            }
+        }
+        data.search($('#TxtSearch').val(), function(worked) {
+            if (worked) {
+                console.log("Search came back as successful from the wrapper");
+                var emptyResult;
+                var errorToDisplay;
+                var consoleError;
+
+                //Get the JSON from the wrapper because the search is over 
+                var resultObj = data.getData();
+                console.log(resultObj);
+
+                //Make things a bit easier to work with
+                var workingData = resultObj.RetailigenceSearchResult;
+
+
+                //First we need the make sure the search actually worked. Get the length of the return data
+                var returnLength = workingData.count;
+                if (returnLength == 0) { //Either something broke or there were not results
+                    var errorData = workingData.messages;
+                    console.log("Retailigence API has returned " + errorData.length + " error(s)");
+
+                    //Loop through the errors. There may be more than one =/
+                    $.each(errorData, function(i, item) {
+                        if (errorData[i].APIError.code == "INFO_API_NO_RESULTS_FOUND") {
+                            emptyResult = true;
+                        } 
+                        else {
+                            consoleError += errorData[i].APIError.code + ": " + errorData[i].APIError.description + " | ";
+                            errorToDisplay = errorData[i].APIError.description + " </br> ";
+                        }
+                    });
+
+                    if (emptyResult) {
+                        $("#ResultError").html("<p>Sorry. No results were found</p>");
+                    } 
+                    else {
+                        $("#ResultError").html(errorToDisplay);
+                    }
+                }
+                else{//The search returned some results. Good stuff
+                    
+                }
+
+            } 
+            else { //TODO: Make this show some kind of error message
+                    $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
+            }
+        });
+
+
     }
 
 });
