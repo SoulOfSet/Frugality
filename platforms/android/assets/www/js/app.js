@@ -53,7 +53,7 @@ app.controller("introDialogZipController", function($scope) {
             $scope.ZipError = "Please enter a valid zip code";
         } else {
             localStorage.setItem("prefLocationType", "zip");
-            updateZip($scope.zip);
+            updateZip($scope.Zip);
             console.log("Preferred location type changed to zip code with stored value of zip changed to " + $scope.Zip);
             $scope.ZipError = "";
             //Make sure this doesn't pop up again
@@ -70,8 +70,34 @@ app.controller("introDialogZipController", function($scope) {
 app.controller("searchController", function($scope) {
     $scope.search = function() {
         data.setSearchType("name");
-        data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
-        data.search($('#TxtSearch').val());
+        if(localStorage.getItem("prefLocationType") != null){
+            var locationType = localStorage.getItem("prefLocationType"); //Get location type
+            
+            if(locationType == "zip"){//If zip
+                console.log("User has zip set as preffered location type. Setting wrapper location to zip");
+                data.setLocation(localStorage.getItem("zip"), null);
+            }
+            else if(locationType == "GPS"){//If GPS
+                console.log("User has GPS set as preffered location type. Setting wrapper location to GPS");
+                data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
+            }
+        }
+        data.search($('#TxtSearch').val(), function(worked){
+            if(worked){
+                console.log("Search came back as successful from the wrapper");
+                var json = $.parseJSON(data.getJSON());
+                
+                //Things are about to get really intense
+                var returnLength = data.RetailigenceSearchResult.count;
+                console.log(returnLength);
+                
+            }
+            else{//TODO: Make this show some kind of error message
+                
+            }
+        });
+        
+        
     }
 
 });

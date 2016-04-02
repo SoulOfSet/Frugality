@@ -12,7 +12,6 @@ var updateGPSData = function(callback) {
         localStorage.setItem("latitude", lat);
         localStorage.setItem("longitude", long);
         if (callback != null) {
-            console.log("swag");
             callback(true); //We were able to triangulate GPS location
         }
     }, function() {

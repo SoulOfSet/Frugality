@@ -99,7 +99,7 @@ var retailigence = function(key, id, onSuccess, onFail){
     };
 
     //Search function
-    this.search = function(query){
+    this.search = function(query, callback){
         if(!authenticated){
             console.log("retailigence.js: Application was not authenticated with the API");
             errorMessage = "Not authenticated with the API";
@@ -115,12 +115,12 @@ var retailigence = function(key, id, onSuccess, onFail){
             var json = downloadJSON(url, function(data){
                 console.log("retailigence.js: Search succeeded");
                 jsonData = data;
-                console.log(jsonData)
+                callback(true);
             }, function(){
                 console.log("retailigence.js: Search failed");
+                callback(false);
             });
-
-            console.log(json)
+            console.log(json);
         }
     };
 
@@ -195,7 +195,7 @@ var retailigence = function(key, id, onSuccess, onFail){
             }
             //Replace all with one
             else if(editType == "replace"){
-                console.log("retailigence.js: Replacing all values within key " + key + " with value " + value)
+                console.log("retailigence.js: Replacing all values within key " + key + " with value " + value);
                 extraParams[key] = value;
                 return true;
             }
