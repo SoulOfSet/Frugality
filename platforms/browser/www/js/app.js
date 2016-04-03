@@ -1,5 +1,8 @@
 var zipReg = /^\d{5}$/;
 
+//TODO: Scope this down relatively
+var currentList = new Object();
+
 //home.html functions
 app.controller("tabHostController", function($scope) {
     var data = localStorage.getItem("hasRun");
@@ -126,11 +129,28 @@ app.controller("searchController", function($scope) {
                     }
                 }
                 else{//The search returned some results. Good stuff
+                    currentList.items = [];
+                    //We need to build our own object from results
+                    $.each(workingData.results, function(i){// for each result in the returned result array
+                        //TODO: I'm not actually sure is this external product id remains consistent between identical items. I dont think so. So this might have to be revamped
+                        console.log(workingData.results[i].SearchResult.product.externalproductid);
+                        var currResult = workingData.results[i].SearchResult;
+                        console.log(i);
+                        //TODO: This needs way more work. I'm extremely tired so this may be wrong but data needs to be reconciled between external id's/internal ids/eans/skus/upcs etc to do our best to make sure we merge identical data?
+                        var identifiers = {externalproductid:currResult.product.externalproductid, id:currResult.product.id, barcode:currResult.product.barcode, sku:currResult.product.sku};
+                        $.each(currentList, function(e){
+                           //console.log(e); 
+                        });
+                        
+                        console.log(identifiers);
+
+                    })
                     
+                    console.log("merr: " + currentList);
                 }
 
             } 
-            else { //TODO: Make this show some kind of error message
+            else { 
                     $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
             }
         });

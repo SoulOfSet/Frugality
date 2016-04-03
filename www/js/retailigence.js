@@ -10,6 +10,10 @@
  * @param onSuccess Callback for JSON retrieve success
  * @param onFail    Callback for JSON retrieve fail
  */
+ 
+ 
+//TODO: Make a next page function for this wrapper. I can't believe i forgot that
+
 var retailigence = function(key, id, onSuccess, onFail){
 
     //The dynamic API data from the arguments
