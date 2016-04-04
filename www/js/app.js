@@ -76,6 +76,9 @@ app.controller("introDialogZipController", function($scope) {
 app.controller("searchController", function($scope) {
     $scope.search = function() {
         $("#ResultError").html("");
+        data.editExtraParam("add", "range", "500");
+        data.editExtraParam("add", "pageSize", "30");
+        data.editExtraParam("add", "expandResults", "true");
         data.setSearchType("name");
         if (localStorage.getItem("prefLocationType") != null) {
             var locationType = localStorage.getItem("prefLocationType"); //Get location type
@@ -114,7 +117,7 @@ app.controller("searchController", function($scope) {
                     $.each(errorData, function(i, item) {
                         if (errorData[i].APIError.code == "INFO_API_NO_RESULTS_FOUND") {
                             emptyResult = true;
-                        } 
+                        }
                         else {
                             consoleError += errorData[i].APIError.code + ": " + errorData[i].APIError.description + " | ";
                             errorToDisplay = errorData[i].APIError.description + " </br> ";
@@ -123,33 +126,49 @@ app.controller("searchController", function($scope) {
 
                     if (emptyResult) {
                         $("#ResultError").html("<p>Sorry. No results were found</p>");
-                    } 
+                    }
                     else {
                         $("#ResultError").html(errorToDisplay);
                     }
                 }
                 else{//The search returned some results. Good stuff
                     currentList.items = [];
+                    currentList.categories = [];
+
                     //We need to build our own object from results
+                    var counter = 0;
                     $.each(workingData.results, function(i){// for each result in the returned result array
+                        var itemExists = false;
                         //TODO: I'm not actually sure is this external product id remains consistent between identical items. I dont think so. So this might have to be revamped
-                        console.log(workingData.results[i].SearchResult.product.externalproductid);
+                        //console.log(workingData.results[i].SearchResult.product.externalproductid);
                         var currResult = workingData.results[i].SearchResult;
                         console.log(i);
                         //TODO: This needs way more work. I'm extremely tired so this may be wrong but data needs to be reconciled between external id's/internal ids/eans/skus/upcs etc to do our best to make sure we merge identical data?
-                        var identifiers = {externalproductid:currResult.product.externalproductid, id:currResult.product.id, barcode:currResult.product.barcode, sku:currResult.product.sku};
-                        $.each(currentList, function(e){
-                           //console.log(e); 
+                        var identifiers = {externalproductid:currResult.product.externalproductid, id:currResult.product.id, barcode:currResult.product.barcode, sku:currResult.product.sku, lowestPrice: undefined, productName: currResult.product.name};
+                        identifiers.locations = [];
+                        $.each(currentList.items, function(e, item){
+                            console.log(item.externalproductid +  " " + identifiers.externalproductid);
+                            if (item.externalproductid == identifiers.externalproductid && item.externalproductid != undefined || item.id == identifiers.id && item.id != undefined || item.barcode == identifiers.barcode && item.barcode != undefined || item.sku == identifiers.sku && item.sku != undefined) {
+                                itemExists = true;
+                            }
                         });
-                        
-                        console.log(identifiers);
 
-                    })
-                    
-                    console.log("merr: " + currentList);
+                        if(!itemExists){
+                            currentList.items[counter] = identifiers;
+                            currentList.items[counter].locations[0]  = {
+                                //name: currResult.location.
+                            };
+                            counter++;
+                        }
+                        console.log("BAH");
+                        console.log(currentList);
+
+                    });
+
+                    console.log(currentList);
                 }
 
-            } 
+            }
             else { 
                     $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
             }
