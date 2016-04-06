@@ -31,18 +31,35 @@ select:focus {
 }
 h1 {
   font-size: 36px;
+  text-align: center;
 }
 h2 {
   font-size: 30px;
 }
 h3 {
   font-size: 24px;
+  text-align: center;
 }
-h4,
+h4 {
+  font-size: 20px;
+  text-align: center;
+}
 h5,
 h6 {
   font-size: 18px;
 }
+
+p{
+   font-size: 20px;
+  text-indent: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+
+
+
+
 .page {
   font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
   -webkit-font-smoothing: antialiased;
