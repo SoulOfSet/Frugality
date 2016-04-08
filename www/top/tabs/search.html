@@ -6,5 +6,12 @@
     </div>
     <div id="SearchResults">
         <div id="ResultError"></div>
+        <ons-list id="ResultList">
+            <ons-list-item ng-repeat="item in currData.items">
+               <img height="25%" width="25%" src="{{item.locations[0].product.images[1].ImageInfo.link}}" />
+                <p>{{item.productName}}</p>
+                <p>{{item.lowestPrice}}</p>
+            </ons-list-item>
+        </ons-list>
     </div>
 </ons-page>

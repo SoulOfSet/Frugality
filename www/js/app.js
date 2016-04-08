@@ -23,8 +23,7 @@ app.controller("introDialogController", function($scope) {
             ons.createDialog('/top/dialogs/enter_zip.html').then(function(dialog) {
                 dialog.show();
             });
-        } 
-        else {
+        } else {
             $scope.showLoad = false;
             $scope.showChoose = true;
             updateGPSData(function(worked) {
@@ -38,8 +37,7 @@ app.controller("introDialogController", function($scope) {
                     ons.createDialog('/top/dialogs/thank_you.html').then(function(dialog) {
                         dialog.show();
                     });
-                } 
-                else {
+                } else {
                     $scope.showChoose = true;
                     $scope.showLoad = false;
                     $scope.GPSError = "We were not able to find your GPS location. Please check your location services";
@@ -56,8 +54,7 @@ app.controller("introDialogZipController", function($scope) {
     $scope.validateZip = function() {
         if (!zipReg.test($scope.Zip)) {
             $scope.ZipError = "Please enter a valid zip code";
-        } 
-        else {
+        } else {
             localStorage.setItem("prefLocationType", "zip");
             updateZip($scope.Zip);
             console.log("Preferred location type changed to zip code with stored value of zip changed to " + $scope.Zip);
@@ -74,6 +71,7 @@ app.controller("introDialogZipController", function($scope) {
 
 //search.html functions
 app.controller("searchController", function($scope) {
+
     $scope.search = function() {
         $("#ResultError").html("");
         data.editExtraParam("add", "range", "500");
@@ -86,8 +84,7 @@ app.controller("searchController", function($scope) {
             if (locationType == "zip") { //If zip
                 console.log("User has zip set as preffered location type. Setting wrapper location to zip");
                 data.setLocation(localStorage.getItem("zip"), null);
-            } 
-            else if (locationType == "GPS") { //If GPS
+            } else if (locationType == "GPS") { //If GPS
                 console.log("User has GPS set as preffered location type. Setting wrapper location to GPS");
                 data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
             }
@@ -99,7 +96,7 @@ app.controller("searchController", function($scope) {
                 var errorToDisplay;
                 var consoleError;
 
-                //Get the JSON from the wrapper because the search is over 
+                //Get the JSON from the wrapper because the search is over
                 var resultObj = data.getData();
                 console.log(resultObj);
 
@@ -117,8 +114,7 @@ app.controller("searchController", function($scope) {
                     $.each(errorData, function(i, item) {
                         if (errorData[i].APIError.code == "INFO_API_NO_RESULTS_FOUND") {
                             emptyResult = true;
-                        }
-                        else {
+                        } else {
                             consoleError += errorData[i].APIError.code + ": " + errorData[i].APIError.description + " | ";
                             errorToDisplay = errorData[i].APIError.description + " </br> ";
                         }
@@ -126,55 +122,97 @@ app.controller("searchController", function($scope) {
 
                     if (emptyResult) {
                         $("#ResultError").html("<p>Sorry. No results were found</p>");
-                    }
-                    else {
+                    } else {
                         $("#ResultError").html(errorToDisplay);
                     }
-                }
-                else{//The search returned some results. Good stuff
+                } else { //The search returned some results. Good stuff
                     currentList.items = [];
                     currentList.categories = [];
+                    currentList.types = [];
+                    currentList.cities = [];
 
                     //We need to build our own object from results
                     var counter = 0;
-                    $.each(workingData.results, function(i){// for each result in the returned result array
+                    $.each(workingData.results, function(i) { // for each result in the returned result array
                         var itemExists = false;
-                        //TODO: I'm not actually sure is this external product id remains consistent between identical items. I dont think so. So this might have to be revamped
-                        //console.log(workingData.results[i].SearchResult.product.externalproductid);
+                        var itemIndex = 0;
                         var currResult = workingData.results[i].SearchResult;
                         console.log(i);
-                        //TODO: This needs way more work. I'm extremely tired so this may be wrong but data needs to be reconciled between external id's/internal ids/eans/skus/upcs etc to do our best to make sure we merge identical data?
-                        var identifiers = {externalproductid:currResult.product.externalproductid, id:currResult.product.id, barcode:currResult.product.barcode, sku:currResult.product.sku, lowestPrice: undefined, productName: currResult.product.name};
-                        identifiers.locations = [];
-                        $.each(currentList.items, function(e, item){
-                            console.log(item.externalproductid +  " " + identifiers.externalproductid);
-                            if (item.externalproductid == identifiers.externalproductid && item.externalproductid != undefined || item.id == identifiers.id && item.id != undefined || item.barcode == identifiers.barcode && item.barcode != undefined || item.sku == identifiers.sku && item.sku != undefined) {
-                                itemExists = true;
+                        console.log(currResult);
+
+
+                        //Set up data for local filtering.
+                        var filterData = {
+                            productCategory: currResult.product.productCategory,
+                            productType: currResult.product.productType,
+                            city: currResult.location.address.city
+                        };
+                        console.log(filterData);
+
+                        //Go through each of the filter categories and make sure that the data doesnt exist already
+                        $.each(filterData.productCategory, function(x, category){
+                            console.log(category);
+                            if(currentList.categories[category] === undefined){
+                                currentList.categories[category] = "";
                             }
+                           currentList.categories[category] += "/" + i;
+                        });
+                        $.each(filterData.producttype, function(x, type){
+                            if(currentList.types[type] === undefined){
+                                currentList.types[type] = "";
+                            }
+                           currentList.types[type] += "/" + i;
                         });
 
-                        if(!itemExists){
-                            currentList.items[counter] = identifiers;
-                            currentList.items[counter].locations[0]  = {
-                                //name: currResult.location.
-                            };
+                        if(currentList.cities[filterData.city] === undefined){
+                            currentList.cities[filterData.city] = "";
+                        }
+                        currentList.cities[filterData.city] += "/" + i;
+
+
+                       /* $.each(currentList.categories, function(e, item) {
+                            console.log(item);
+                            if (key item[e] ) {
+                                itemExists = true;
+                                itemIndex = e;
+                            }
+                        });*/
+
+                        //New item
+                        /*if (!itemExists) {
+                            currentList.items[counter] = filterData;
+                            currentList.items[counter].locations[0] = currResult.location;
+                            currentList.items[counter].locations[0].product = currResult.product;
+                            currentList.items[counter].locations[0].price = currResult.price;
+                            //Changes lowest price in root item tree
+                            currentList.items[counter].lowestPrice = currResult.price;
                             counter++;
                         }
-                        console.log("BAH");
-                        console.log(currentList);
+                        //Item already exists is just at a separate location
+                        else {
+                            var locationsLength = currentList.items[itemIndex].locations.length;
+                            currentList.items[itemIndex].locations[locationsLength] = currResult.location;
+                            currentList.items[itemIndex].locations[locationsLength].product = currResult.product;
+                            currentList.items[itemIndex].locations[locationsLength].price = currResult.price;
+                            //Changes lowest price if applicable in root item tree
+                            if (currResult.price < currentList.items[itemIndex].lowestPrice || currResult.price === undefined) {
+                                currentList.items[itemIndex].lowestPrice = currResult.price;
+                            }
+
+                        }*/
 
                     });
-
+                    //$scope.currData = currentList;
+                    //$scope.$apply();
                     console.log(currentList);
+
+                    console.log(swag);
                 }
 
-            }
-            else { 
-                    $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
+            } else {
+                $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
             }
         });
-
-
     }
 
 });
