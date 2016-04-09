@@ -132,11 +132,9 @@ app.controller("searchController", function($scope) {
                     currentList.cities = [];
 
                     //We need to build our own object from results
-                    var counter = 0;
                     $.each(workingData.results, function(i) { // for each result in the returned result array
-                        var itemExists = false;
-                        var itemIndex = 0;
                         var currResult = workingData.results[i].SearchResult;
+                        currentList.items[i] = currResult;
                         console.log(i);
                         console.log(currResult);
 
@@ -156,12 +154,14 @@ app.controller("searchController", function($scope) {
                                 currentList.categories[category] = "";
                             }
                            currentList.categories[category] += "/" + i;
+                            console.log(currentList.categories[category]);
                         });
-                        $.each(filterData.producttype, function(x, type){
+                        $.each(filterData.productType, function(x, type){
                             if(currentList.types[type] === undefined){
                                 currentList.types[type] = "";
                             }
                            currentList.types[type] += "/" + i;
+                            console.log(currentList.categories[type]);
                         });
 
                         if(currentList.cities[filterData.city] === undefined){
@@ -169,44 +169,12 @@ app.controller("searchController", function($scope) {
                         }
                         currentList.cities[filterData.city] += "/" + i;
 
-
-                       /* $.each(currentList.categories, function(e, item) {
-                            console.log(item);
-                            if (key item[e] ) {
-                                itemExists = true;
-                                itemIndex = e;
-                            }
-                        });*/
-
-                        //New item
-                        /*if (!itemExists) {
-                            currentList.items[counter] = filterData;
-                            currentList.items[counter].locations[0] = currResult.location;
-                            currentList.items[counter].locations[0].product = currResult.product;
-                            currentList.items[counter].locations[0].price = currResult.price;
-                            //Changes lowest price in root item tree
-                            currentList.items[counter].lowestPrice = currResult.price;
-                            counter++;
-                        }
-                        //Item already exists is just at a separate location
-                        else {
-                            var locationsLength = currentList.items[itemIndex].locations.length;
-                            currentList.items[itemIndex].locations[locationsLength] = currResult.location;
-                            currentList.items[itemIndex].locations[locationsLength].product = currResult.product;
-                            currentList.items[itemIndex].locations[locationsLength].price = currResult.price;
-                            //Changes lowest price if applicable in root item tree
-                            if (currResult.price < currentList.items[itemIndex].lowestPrice || currResult.price === undefined) {
-                                currentList.items[itemIndex].lowestPrice = currResult.price;
-                            }
-
-                        }*/
-
                     });
-                    //$scope.currData = currentList;
-                    //$scope.$apply();
+                    $scope.currData = currentList;
+                    $scope.$apply();
                     console.log(currentList);
 
-                    console.log(swag);
+                    console.log("swag");
                 }
 
             } else {
