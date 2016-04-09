@@ -8,9 +8,12 @@
         <div id="ResultError"></div>
         <ons-list id="ResultList">
             <ons-list-item ng-repeat="item in currData.items">
-               <img height="25%" width="25%" src="{{item.locations[0].product.images[1].ImageInfo.link}}" />
-                <p>{{item.productName}}</p>
-                <p>{{item.lowestPrice}}</p>
+               <img height="25%" width="25%" src="{{item.product.images[1].ImageInfo.link}}" />
+                <p>{{item.product.name}}</p>
+                <p>{{item.price}}</p>
+                <p>{{item.location.address.city}}</p>
+                <p>{{item.product.productType[0]}}</p>
+                <p>{{item.location.name}}</p>
             </ons-list-item>
         </ons-list>
     </div>
