@@ -37,6 +37,9 @@
     text-align: center;
 }
 
+#ResultList{
+    margin-top: 10px;
+}
 /*#TxtSearch {
     position: absolute;
     top: 10%;
