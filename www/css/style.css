@@ -37,6 +37,7 @@
     text-align: center;
 }
 
+<<<<<<< HEAD
 #search,
 #submit {
     float: left;
@@ -89,6 +90,8 @@
 #submit::-moz-focus-inner {
     border: 0;  /* Small centering fix for Firefox */
 }
+=======
+>>>>>>> parent of d1ff0fe... Removed filter. Bar I dont know if we'll have time for that and since im doing the post filter thing I dont' know if it's even entirely necessary to be honest.
 /*#TxtSearch {
     position: absolute;
     top: 10%;
