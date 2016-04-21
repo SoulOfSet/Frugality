@@ -56,7 +56,7 @@ var retailigence = function(key, id, onSuccess, onFail){
         expandResults: null
     };
 
-    function downloadJSON(url, doSuccess, doFail){
+    this.downloadJSON = function(url, doSuccess, doFail){
         isTasking = true;
         taskMessage = "Downloading JSON";
         $.ajax({
@@ -64,7 +64,7 @@ var retailigence = function(key, id, onSuccess, onFail){
             type: 'GET',
             //TODO: this doesn't mean necessarily they are authenticated just that a return OF SOME KIND was successful if this is the immediate constructor call. need to check that data first
             success: function(data){
-                console.log("retailigence.js: GET succeeded")
+                console.log("retailigence.js: GET succeeded");
                 isTasking = false;
                 doSuccess(data);
                 authenticated = true;
@@ -78,9 +78,9 @@ var retailigence = function(key, id, onSuccess, onFail){
                 return "error";
             }
         });
-    }
+    };
 
-    jsonData = downloadJSON(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID + "&userlocation=94063&keywords=test", onSuccess, onFail);
+    jsonData = this.downloadJSON(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID + "&userlocation=94063&keywords=test", onSuccess, onFail);
 
     //Getter for the JSON variable
     this.getData = function(){
@@ -124,7 +124,7 @@ var retailigence = function(key, id, onSuccess, onFail){
             });
             var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query + extraData, null, null);
             console.log(url);
-            var json = downloadJSON(url, function(data){
+            var json = this.downloadJSON(url, function(data){
                 console.log("retailigence.js: Search succeeded");
                 jsonData = data;
                 callback(true);
