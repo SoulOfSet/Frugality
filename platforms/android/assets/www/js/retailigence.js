@@ -115,7 +115,15 @@ var retailigence = function(key, id, onSuccess, onFail){
             return false;
         }
         else{
-            var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query, null, null);
+            var extraData = "";
+            //Construct extra parameters
+            $.each(extraParams, function(key, value){
+                if(value != undefined){
+                    extraData += "&" + key + "=" + value;
+                }
+            });
+            var url = encodeURI(BASE_URL + "&apikey=" + apiKey + "&requestorid=" + apiID +"&userlocation=" + userLocation + "&" + searchType + "=" + query + extraData, null, null);
+            console.log(url);
             var json = downloadJSON(url, function(data){
                 console.log("retailigence.js: Search succeeded");
                 jsonData = data;
