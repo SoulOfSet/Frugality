@@ -7,7 +7,7 @@ var currentList = new Object();
 app.controller("tabHostController", function($scope) {
     var data = localStorage.getItem("hasRun");
     if (data == "false") {
-        ons.createDialog('/top/dialogs/intro_dialog.html').then(function(dialog) {
+        ons.createDialog('top/dialogs/intro_dialog.html').then(function(dialog) {
             dialog.show();
         });
     }
@@ -20,7 +20,7 @@ app.controller("introDialogController", function($scope) {
     $scope.setLocationPref = function(button) {
         if (button == 0) {
             introDialog.hide();
-            ons.createDialog('/top/dialogs/enter_zip.html').then(function(dialog) {
+            ons.createDialog('top/dialogs/enter_zip.html').then(function(dialog) {
                 dialog.show();
             });
         } else {
@@ -34,7 +34,7 @@ app.controller("introDialogController", function($scope) {
                     localStorage.setItem("prefLocationType", "GPS");
                     localStorage.setItem("hasRun", true);
                     introDialog.hide();
-                    ons.createDialog('/top/dialogs/thank_you.html').then(function(dialog) {
+                    ons.createDialog('top/dialogs/thank_you.html').then(function(dialog) {
                         dialog.show();
                     });
                 } else {
@@ -62,7 +62,7 @@ app.controller("introDialogZipController", function($scope) {
             //Make sure this doesn't pop up again
             localStorage.setItem("hasRun", true);
             introDialogZip.hide();
-            ons.createDialog('/top/dialogs/thank_you.html').then(function(dialog) {
+            ons.createDialog('top/dialogs/thank_you.html').then(function(dialog) {
                 dialog.show();
             });
         }
@@ -71,8 +71,29 @@ app.controller("introDialogZipController", function($scope) {
 
 //search.html functions
 app.controller("searchController", function($scope) {
+    $("#ResultBar").hide();
+    
+    $scope.popFilter = function(){
+        ons.createPopover('top/tabs/filterPopOver.html').then(function(popover) {
+               $scope.popover = popover;
+               popover.show("#filterIcon");
+        });
+    };
+
+    $scope.resultClick = function(data){
+        document.addEventListener("backbutton", function(){
+            $("#ResultDetails").hide();
+            $("#SearchResultList").show();
+        }, false);
+        $("#SearchResultList").hide();
+        $("#ResultDetails").show();
+        console.log(data);
+    };
+
 
     $scope.search = function() {
+        $("#ResultBar").hide();
+        $scope.currData = {};
         $("#ResultError").html("");
         data.editExtraParam("add", "range", "500");
         data.editExtraParam("add", "pageSize", "30");
@@ -98,6 +119,7 @@ app.controller("searchController", function($scope) {
 
                 //Get the JSON from the wrapper because the search is over
                 var resultObj = data.getData();
+
                 console.log(resultObj);
 
                 //Make things a bit easier to work with
@@ -106,6 +128,9 @@ app.controller("searchController", function($scope) {
 
                 //First we need the make sure the search actually worked. Get the length of the return data
                 var returnLength = workingData.count;
+                $scope.searchCount = returnLength;
+                $scope.searchName = $('#TxtSearch').val();
+                $("#ResultBar").show();
                 if (returnLength == 0) { //Either something broke or there were not results
                     var errorData = workingData.messages;
                     console.log("Retailigence API has returned " + errorData.length + " error(s)");
@@ -122,8 +147,10 @@ app.controller("searchController", function($scope) {
 
                     if (emptyResult) {
                         $("#ResultError").html("<p>Sorry. No results were found</p>");
+                        $("#ResultError").show();
                     } else {
-                        $("#ResultError").html(errorToDisplay);
+                        $("#ResultError").html("<p>" + errorToDisplay + "</p>");
+                        $("#ResultError").show();
                     }
                 } else { //The search returned some results. Good stuff
                     currentList.items = [];
@@ -173,7 +200,6 @@ app.controller("searchController", function($scope) {
                     $scope.currData = currentList;
                     $scope.$apply();
                     console.log(currentList);
-
                     console.log("swag");
                 }
 
@@ -188,8 +214,32 @@ app.controller("searchController", function($scope) {
 //settings.html functions
 app.controller("settingsController", function($scope) {
     $scope.setLocationPref = function() {
-        ons.createDialog('/top/dialogs/intro_dialog.html').then(function(dialog) {
+        ons.createDialog('top/dialogs/intro_dialog.html').then(function(dialog) {
             dialog.show();
         });
     }
+});
+
+//filterPopover.html functions
+app.controller("filterPopController", function($scope) {
+    $scope.groups = [];
+
+    $scope.groups[0] = {name: "Cities", items: []};
+    $scope.groups[1] = {name: "Categories", items: []};
+    $scope.groups[2] = {name: "Types", items: []};
+
+    /*
+     * if given group is the selected group, deselect it
+     * else, select the given group
+     */
+    $scope.toggleGroup = function(group) {
+        if ($scope.isGroupShown(group)) {
+            $scope.shownGroup = null;
+        } else {
+            $scope.shownGroup = group;
+        }
+    };
+    $scope.isGroupShown = function(group) {
+        return $scope.shownGroup === group;
+    };
 });
