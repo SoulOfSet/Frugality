@@ -1,18 +1,19 @@
 <ons-page id="filterPopOver.html">
     <ons-popover var="filterPop" ng-controller="filterPopController" cancelable>
-        <p>Filter</p>
-        <hr>
-        <ons-list>
-            <div ng-repeat="group in groups">
-                <ons-list-item ng-click="toggleGroup(group)" class="title" ng-class="{active:isGroupShown(group)}">
-                    <ons-icon icon="minus-square-o" ng-if="isGroupShown(group)"></ons-icon>
-                    <ons-icon icon="plus-square-o" ng-if="!isGroupShown(group)"></ons-icon>
-                    Group {{group.name}}
-                </ons-list-item>
-                <ons-list-item class="item-accordion" ng-repeat="item in group.items" ng-show="isGroupShown(group)">
-                    {{item}}
-                </ons-list-item>
-            </div>
-        </ons-list>
+        <div style="background-color: #FFFFFF">
+            <p>Filter</p>
+            <ons-list>
+                <div ng-repeat="group in groups">
+                    <ons-list-item ng-click="toggleGroup(group)" class="title" ng-class="{active:isGroupShown(group)}">
+                        <ons-icon icon="minus-square-o" ng-if="isGroupShown(group)"></ons-icon>
+                        <ons-icon icon="plus-square-o" ng-if="!isGroupShown(group)"></ons-icon>
+                        {{group.name}}
+                    </ons-list-item>
+                    <ons-list-item class="item-accordion" ng-repeat="item in group.items" ng-show="isGroupShown(group)">
+                        {{item}}
+                    </ons-list-item>
+                </div>
+            </ons-list>
+        </div>
     </ons-popover>
 </ons-page>
