@@ -7,7 +7,7 @@ var currentList = new Object();
 app.controller("tabHostController", function($scope) {
     var data = localStorage.getItem("hasRun");
     if (data == "false") {
-        ons.createDialog('/top/dialogs/intro_dialog.html').then(function(dialog) {
+        ons.createDialog('top/dialogs/intro_dialog.html').then(function(dialog) {
             dialog.show();
         });
     }
@@ -20,11 +20,10 @@ app.controller("introDialogController", function($scope) {
     $scope.setLocationPref = function(button) {
         if (button == 0) {
             introDialog.hide();
-            ons.createDialog('/top/dialogs/enter_zip.html').then(function(dialog) {
+            ons.createDialog('top/dialogs/enter_zip.html').then(function(dialog) {
                 dialog.show();
             });
-        } 
-        else {
+        } else {
             $scope.showLoad = false;
             $scope.showChoose = true;
             updateGPSData(function(worked) {
@@ -35,11 +34,10 @@ app.controller("introDialogController", function($scope) {
                     localStorage.setItem("prefLocationType", "GPS");
                     localStorage.setItem("hasRun", true);
                     introDialog.hide();
-                    ons.createDialog('/top/dialogs/thank_you.html').then(function(dialog) {
+                    ons.createDialog('top/dialogs/thank_you.html').then(function(dialog) {
                         dialog.show();
                     });
-                } 
-                else {
+                } else {
                     $scope.showChoose = true;
                     $scope.showLoad = false;
                     $scope.GPSError = "We were not able to find your GPS location. Please check your location services";
@@ -56,8 +54,7 @@ app.controller("introDialogZipController", function($scope) {
     $scope.validateZip = function() {
         if (!zipReg.test($scope.Zip)) {
             $scope.ZipError = "Please enter a valid zip code";
-        } 
-        else {
+        } else {
             localStorage.setItem("prefLocationType", "zip");
             updateZip($scope.Zip);
             console.log("Preferred location type changed to zip code with stored value of zip changed to " + $scope.Zip);
@@ -65,7 +62,7 @@ app.controller("introDialogZipController", function($scope) {
             //Make sure this doesn't pop up again
             localStorage.setItem("hasRun", true);
             introDialogZip.hide();
-            ons.createDialog('/top/dialogs/thank_you.html').then(function(dialog) {
+            ons.createDialog('top/dialogs/thank_you.html').then(function(dialog) {
                 dialog.show();
             });
         }
@@ -74,8 +71,22 @@ app.controller("introDialogZipController", function($scope) {
 
 //search.html functions
 app.controller("searchController", function($scope) {
+    $("#ResultBar").hide();
+    
+    $scope.popFilter = function(){
+        ons.createPopover('top/tabs/filterPopOver.html').then(function(popover) {
+               $scope.popover = popover;
+               popover.show("#filterIcon");
+        });
+    }
+    
     $scope.search = function() {
+        $("#ResultBar").hide();
+        $scope.currData = {};
         $("#ResultError").html("");
+        data.editExtraParam("add", "range", "500");
+        data.editExtraParam("add", "pageSize", "30");
+        data.editExtraParam("add", "expandResults", "true");
         data.setSearchType("name");
         if (localStorage.getItem("prefLocationType") != null) {
             var locationType = localStorage.getItem("prefLocationType"); //Get location type
@@ -83,8 +94,7 @@ app.controller("searchController", function($scope) {
             if (locationType == "zip") { //If zip
                 console.log("User has zip set as preffered location type. Setting wrapper location to zip");
                 data.setLocation(localStorage.getItem("zip"), null);
-            } 
-            else if (locationType == "GPS") { //If GPS
+            } else if (locationType == "GPS") { //If GPS
                 console.log("User has GPS set as preffered location type. Setting wrapper location to GPS");
                 data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
             }
@@ -96,8 +106,9 @@ app.controller("searchController", function($scope) {
                 var errorToDisplay;
                 var consoleError;
 
-                //Get the JSON from the wrapper because the search is over 
+                //Get the JSON from the wrapper because the search is over
                 var resultObj = data.getData();
+
                 console.log(resultObj);
 
                 //Make things a bit easier to work with
@@ -106,6 +117,9 @@ app.controller("searchController", function($scope) {
 
                 //First we need the make sure the search actually worked. Get the length of the return data
                 var returnLength = workingData.count;
+                $scope.searchCount = returnLength;
+                $scope.searchName = $('#TxtSearch').val();
+                $("#ResultBar").show();
                 if (returnLength == 0) { //Either something broke or there were not results
                     var errorData = workingData.messages;
                     console.log("Retailigence API has returned " + errorData.length + " error(s)");
@@ -114,8 +128,7 @@ app.controller("searchController", function($scope) {
                     $.each(errorData, function(i, item) {
                         if (errorData[i].APIError.code == "INFO_API_NO_RESULTS_FOUND") {
                             emptyResult = true;
-                        } 
-                        else {
+                        } else {
                             consoleError += errorData[i].APIError.code + ": " + errorData[i].APIError.description + " | ";
                             errorToDisplay = errorData[i].APIError.description + " </br> ";
                         }
@@ -123,39 +136,66 @@ app.controller("searchController", function($scope) {
 
                     if (emptyResult) {
                         $("#ResultError").html("<p>Sorry. No results were found</p>");
-                    } 
-                    else {
-                        $("#ResultError").html(errorToDisplay);
+                        $("#ResultError").show();
+                    } else {
+                        $("#ResultError").html("<p>" + errorToDisplay + "</p>");
+                        $("#ResultError").show();
                     }
-                }
-                else{//The search returned some results. Good stuff
+                } else { //The search returned some results. Good stuff
                     currentList.items = [];
-                    //We need to build our own object from results
-                    $.each(workingData.results, function(i){// for each result in the returned result array
-                        //TODO: I'm not actually sure is this external product id remains consistent between identical items. I dont think so. So this might have to be revamped
-                        console.log(workingData.results[i].SearchResult.product.externalproductid);
-                        var currResult = workingData.results[i].SearchResult;
-                        console.log(i);
-                        //TODO: This needs way more work. I'm extremely tired so this may be wrong but data needs to be reconciled between external id's/internal ids/eans/skus/upcs etc to do our best to make sure we merge identical data?
-                        var identifiers = {externalproductid:currResult.product.externalproductid, id:currResult.product.id, barcode:currResult.product.barcode, sku:currResult.product.sku};
-                        $.each(currentList, function(e){
-                           //console.log(e); 
-                        });
-                        
-                        console.log(identifiers);
+                    currentList.categories = [];
+                    currentList.types = [];
+                    currentList.cities = [];
 
-                    })
-                    
-                    console.log("merr: " + currentList);
+                    //We need to build our own object from results
+                    $.each(workingData.results, function(i) { // for each result in the returned result array
+                        var currResult = workingData.results[i].SearchResult;
+                        currentList.items[i] = currResult;
+                        console.log(i);
+                        console.log(currResult);
+
+
+                        //Set up data for local filtering.
+                        var filterData = {
+                            productCategory: currResult.product.productCategory,
+                            productType: currResult.product.productType,
+                            city: currResult.location.address.city
+                        };
+                        console.log(filterData);
+
+                        //Go through each of the filter categories and make sure that the data doesnt exist already
+                        $.each(filterData.productCategory, function(x, category){
+                            console.log(category);
+                            if(currentList.categories[category] === undefined){
+                                currentList.categories[category] = "";
+                            }
+                           currentList.categories[category] += "/" + i;
+                            console.log(currentList.categories[category]);
+                        });
+                        $.each(filterData.productType, function(x, type){
+                            if(currentList.types[type] === undefined){
+                                currentList.types[type] = "";
+                            }
+                           currentList.types[type] += "/" + i;
+                            console.log(currentList.categories[type]);
+                        });
+
+                        if(currentList.cities[filterData.city] === undefined){
+                            currentList.cities[filterData.city] = "";
+                        }
+                        currentList.cities[filterData.city] += "/" + i;
+
+                    });
+                    $scope.currData = currentList;
+                    $scope.$apply();
+                    console.log(currentList);
+                    console.log("swag");
                 }
 
-            } 
-            else { 
-                    $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
+            } else {
+                $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
             }
         });
-
-
     }
 
 });
@@ -163,8 +203,29 @@ app.controller("searchController", function($scope) {
 //settings.html functions
 app.controller("settingsController", function($scope) {
     $scope.setLocationPref = function() {
-        ons.createDialog('/top/dialogs/intro_dialog.html').then(function(dialog) {
+        ons.createDialog('top/dialogs/intro_dialog.html').then(function(dialog) {
             dialog.show();
         });
     }
+});
+
+//filterPopover.html functions
+app.controller("filterPopController", function($scope) {
+    $scope.groups = ['Cities', 'Categories', 'Types'];
+    
+
+    /*
+     * if given group is the selected group, deselect it
+     * else, select the given group
+     */
+    $scope.toggleGroup = function(group) {
+        if ($scope.isGroupShown(group)) {
+            $scope.shownGroup = null;
+        } else {
+            $scope.shownGroup = group;
+        }
+    };
+    $scope.isGroupShown = function(group) {
+        return $scope.shownGroup === group;
+    };
 });
