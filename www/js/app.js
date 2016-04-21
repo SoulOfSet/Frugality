@@ -78,8 +78,19 @@ app.controller("searchController", function($scope) {
                $scope.popover = popover;
                popover.show("#filterIcon");
         });
-    }
-    
+    };
+
+    $scope.resultClick = function(data){
+        document.addEventListener("backbutton", function(){
+            $("#ResultDetails").hide();
+            $("#SearchResultList").show();
+        }, false);
+        $("#SearchResultList").hide();
+        $("#ResultDetails").show();
+        console.log(data);
+    };
+
+
     $scope.search = function() {
         $("#ResultBar").hide();
         $scope.currData = {};
@@ -211,8 +222,11 @@ app.controller("settingsController", function($scope) {
 
 //filterPopover.html functions
 app.controller("filterPopController", function($scope) {
-    $scope.groups = ['Cities', 'Categories', 'Types'];
-    
+    $scope.groups = [];
+
+    $scope.groups[0] = {name: "Cities", items: []};
+    $scope.groups[1] = {name: "Categories", items: []};
+    $scope.groups[2] = {name: "Types", items: []};
 
     /*
      * if given group is the selected group, deselect it
