@@ -26,3 +26,27 @@ var updateGPSData = function(callback) {
 var updateZip = function(zip){
     localStorage.setItem("zip", zip);
 };
+
+var downloadJSON = function(url, doSuccess, doFail){
+        isTasking = true;
+        taskMessage = "Downloading JSON";
+        $.ajax({
+            url: url,
+            type: 'GET',
+            //TODO: this doesn't mean necessarily they are authenticated just that a return OF SOME KIND was successful if this is the immediate constructor call. need to check that data first
+            success: function(data){
+                console.log("retailigence.js: GET succeeded");
+                isTasking = false;
+                doSuccess(data);
+                authenticated = true;
+                return true;
+            },
+            error: function(data) {
+                console.log("retailigence.js: GET failed with error" + data);
+                errorMessage = data;
+                isTasking = false;
+                doFail();
+                return "error";
+            }
+        });
+    };
