@@ -1,4 +1,6 @@
 <ons-page ng-controller="searchController">
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+        async defer></script>
     <div id="SearchSection">
         <div style="margin-top: 2%; margin-bottom: 2%;" class="center"><input id="TxtSearch" type="text" class="search-input" placeholder="Search"></input></div>
         <ons-button modifier="large--cta" ng-click="search()">Search</ons-button>
@@ -28,7 +30,15 @@
         </div>
     </div>
     <div id="ResultDetails" style="display: none">
-        <p>{{itemName}}</p>
-        <p>{{itemAddress}}</p>
+        <img src="{{img}}"></img>
+        <p>{{name}}</p>
+        <p>{{address}}</p>
+        <p>{{price}}</p>
+        <p>{{zip}}</p>
+        <p>{{state}}</p>
+        <p>{{img}}</p>
+        <p>{{phoneNum}}</p>
+        <p>{{hours}}</p>
+        <div id="map" style="width: 25%; height: 25%"></div>
     </div>
 </ons-page>

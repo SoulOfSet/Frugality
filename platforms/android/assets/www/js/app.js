@@ -85,14 +85,42 @@ app.controller("searchController", function($scope) {
             $("#ResultDetails").hide();
             $("#SearchResultList").show();
         }, false);
+        
         $("#SearchResultList").hide();
         $("#ResultDetails").show();
         console.log(data);
+        $scope.inStock = "Loading...";
+        $scope.numInStock = "...";
+        $scope.name = data.product.name;
+        $scope.address = data.location.address.address1;
+        $scope.price = data.price;
+        $scope.zip = data.location.address.postal;
+        $scope.state = data.location.address.state;
+        $scope.img = data.product.images[1].ImageInfo.link;
+        $scope.latitude = data.location.location.latitude;
+        $scope.longitude = data.location.location.longitude;
+        $scope.phoneNum = data.location.phone;
+        $scope.hours = data.location.hours;
+        
+        downloadJSON(data.product.inventory, function(data){
+            
+            console.log(data);
+            $scope.inStock = data.RetailigenceAPIResult.results[0].ProductLocation.quantityText;
+            $scope.numInStock = data.RetailigenceAPIResult.results[0].ProductLocation.quantity;
+            
+        }, function(){
+            console.log("Getting inventory data failed");
+            $scope.inStock = "N/A";
+            $scope.numInStock = "N/A";
+        });
+        
     };
 
 
     $scope.search = function() {
         $("#ResultBar").hide();
+        $("#ResultDetails").hide();
+        $("#SearchResultList").show();
         $scope.currData = {};
         $("#ResultError").html("");
         data.editExtraParam("add", "range", "500");

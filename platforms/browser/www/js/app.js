@@ -82,6 +82,7 @@ app.controller("searchController", function($scope) {
 
     $scope.resultClick = function(data){
         document.addEventListener("backbutton", function(){
+            //TODO: Fix this.....
             $("#ResultDetails").hide();
             $("#SearchResultList").show();
         }, false);
@@ -90,9 +91,9 @@ app.controller("searchController", function($scope) {
         $("#ResultDetails").show();
         console.log(data);
         $scope.inStock = "Loading...";
-        $scope.numInStock = "...;
-        $scope.itemName = data.product.name;
-        $scope.itemAddress = data.location.address.address1;
+        $scope.numInStock = "";
+        $scope.name = data.product.name;
+        $scope.address = data.location.address.address1;
         $scope.price = data.price;
         $scope.zip = data.location.address.postal;
         $scope.state = data.location.address.state;
@@ -103,17 +104,30 @@ app.controller("searchController", function($scope) {
         $scope.hours = data.location.hours;
         
         downloadJSON(data.product.inventory, function(data){
-            $scope.inStock = data.results[0].ProductLocation.quantityText;
-            $scope.inStock = data.results[0].ProductLocation.quantity;
+            
             console.log(data);
+            if(data.RetailigenceAPIResult.messages !== undefined){
+                $scope.inStock = "N/A";
+                $scope.numInStock = "N/A";
+            }
+            else{
+                $scope.inStock = data.RetailigenceAPIResult.results[0].ProductLocation.quantityText;
+                $scope.numInStock = data.RetailigenceAPIResult.results[0].ProductLocation.quantity;
+            }
+            $scope.$apply();
         }, function(){
             console.log("Getting inventory data failed");
             $scope.inStock = "N/A";
             $scope.numInStock = "N/A";
+            $scope.$apply();
         });
         
     };
 
+    $scope.backClick = function(){
+        $("#ResultDetails").hide();
+        $("#SearchResultList").show();
+    }
 
     $scope.search = function() {
         $("#ResultBar").hide();

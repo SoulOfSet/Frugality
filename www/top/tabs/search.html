@@ -1,4 +1,6 @@
-<ons-page ng-controller="searchController">
+"<ons-page ng-controller="searchController">
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+        async defer></script>
     <div id="SearchSection">
         <div style="margin-top: 2%; margin-bottom: 2%;" class="center"><input id="TxtSearch" type="text" class="search-input" placeholder="Search"></input></div>
         <ons-button modifier="large--cta" ng-click="search()">Search</ons-button>
@@ -15,20 +17,27 @@
 
             </div>
             <ons-list id="ResultList">
-                <ons-list-item ng-click="resultClick(this.item)" ng-repeat="item in currData.items">
-                    <img height="25%" width="25%" src="{{item.product.images[1].ImageInfo.link}}" />
-                    <p>{{item.product.name}}</p>
-                    <p>{{item.price}}</p>
-                    <p>{{item.location.address.city}}</p>
-                    <p>{{item.product.productType[0]}}</p>
-                    <p>{{item.location.name}}</p>
-                    <p>{{item.location.address.address1}}</p>
+                <ons-list-item id="singleListItem" style="width: 100%; height: 100%;" ng-click="resultClick(this.item)" ng-repeat="item in currData.items">
+                    <div id="image" style="background: blue; width: 50%;"><img height="50%" width="50%" src="{{item.product.images[1].ImageInfo.link}}"></div>
+                    <div id="name" style="background: red; width: 50%; display: block;">{{item.product.name}}</div>
+                    <div id="price">{{item.price}}</div>
+                    <div id="store">{{item.location.name}}</div>
                 </ons-list-item>
             </ons-list>
         </div>
     </div>
     <div id="ResultDetails" style="display: none">
-        <p>{{itemName}}</p>
-        <p>{{itemAddress}}</p>
+        <ons-icon  id="backButton" ng-click="backClick()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-arrow-left-c" style="font-size: 32px; width: 1em;"></ons-icon>
+        <img src="{{img}}"></img>
+        <p>{{name}}</p>
+        <p>{{address}}</p>
+        <p>{{price}}</p>
+        <p>{{zip}}</p>
+        <p>{{state}}</p>
+        <p>{{inStock}}</p>
+        <p>{{numInStock}}</p>
+        <p>{{phoneNum}}</p>
+        <p>{{hours}}</p>
+        <div id="map" style="width: 25%; height: 25%"></div>
     </div>
 </ons-page>
