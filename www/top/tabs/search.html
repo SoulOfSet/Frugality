@@ -1,6 +1,6 @@
-"<ons-page ng-controller="searchController">
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
-        async defer></script>
+<ons-page ng-controller="searchController">
+    
+    
     <div id="SearchSection">
         <div style="margin-top: 2%; margin-bottom: 2%;" class="center"><input id="TxtSearch" type="text" class="search-input" placeholder="Search"></input></div>
         <ons-button modifier="large--cta" ng-click="search()">Search</ons-button>
@@ -9,7 +9,7 @@
         <div style="width: 100%" id="ResultBar">
             <div style="width: 100%" data-role="header">
                 <span class="left">Showing {{searchCount}} results for search: {{searchName}}</span>
-                <ons-icon  id="filterIcon" ng-click="popFilter()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: red" icon="fa-filter" style="font-size: 32px; width: 1em;"></ons-icon>
+                <!--<ons-icon  id="filterIcon" ng-click="popFilter()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: red" icon="fa-filter" style="font-size: 32px; width: 1em;"></ons-icon>-->
             </div>
         </div>
         <div style="margin-top: 7%" id="SearchResults">
@@ -17,27 +17,27 @@
 
             </div>
             <ons-list id="ResultList">
-                <ons-list-item id="singleListItem" style="width: 100%; height: 100%;" ng-click="resultClick(this.item)" ng-repeat="item in currData.items">
-                    <div id="image" style="background: blue; width: 50%;"><img height="50%" width="50%" src="{{item.product.images[1].ImageInfo.link}}"></div>
-                    <div id="name" style="background: red; width: 50%; display: block;">{{item.product.name}}</div>
-                    <div id="price">{{item.price}}</div>
-                    <div id="store">{{item.location.name}}</div>
+                <ons-list-item id="container" style="hover: gray;" ng-click="resultClick(this.item)"  ng-repeat="item in currData.items">
+                    <div  id="image" style="; display:inline-block;"><img height="75vw" width="75vw" src="{{item.product.images[1].ImageInfo.link}}"></div>
+                    <div class="flexText" id="name">{{item.product.name}}</br>{{item.location.name}}</div>
+                    <div class="flexText" id="price">${{item.price}}</div>
                 </ons-list-item>
             </ons-list>
         </div>
     </div>
-    <div id="ResultDetails" style="display: none">
+    <div id="ResultDetails" style="display: none; height: 100%">
         <ons-icon  id="backButton" ng-click="backClick()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-arrow-left-c" style="font-size: 32px; width: 1em;"></ons-icon>
+        <ons-icon  id="addButton" ng-click="addToWatch(true)" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-plus" style="font-size: 32px; width: 1em;"></ons-icon>
         <img src="{{img}}"></img>
-        <p>{{name}}</p>
-        <p>{{address}}</p>
-        <p>{{price}}</p>
-        <p>{{zip}}</p>
-        <p>{{state}}</p>
-        <p>{{inStock}}</p>
-        <p>{{numInStock}}</p>
-        <p>{{phoneNum}}</p>
-        <p>{{hours}}</p>
-        <div id="map" style="width: 25%; height: 25%"></div>
+        <p>Product: {{name}}</p>
+        <p>Price: ${{price}}</p>
+        <p>Availability: {{inStock}}</p>
+        <p>Qty: {{numInStock}}</p>
+        <p>Address: {{address}}</p>
+        <p>State: {{state}}</p>
+        <p>Zip-Code: {{zip}}</p>
+        <p>Phone: {{phoneNum}}</p>
+        <p>Store Hours: {{hours}}</p>
+        <div id="map"></div>
     </div>
 </ons-page>

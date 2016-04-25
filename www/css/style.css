@@ -88,3 +88,19 @@
 #submit::-moz-focus-inner {
     border: 0;  /* Small centering fix for Firefox */
 }
+
+
+
+#container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flexText{
+    font-size: 3vw, 4vh;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 1%;
+}
