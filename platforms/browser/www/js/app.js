@@ -2,7 +2,8 @@ var zipReg = /^\d{5}$/;
 
 //TODO: Scope this down relatively
 var currentList = new Object();
-
+var itemToAdd;
+var currentItem;
 //home.html functions
 app.controller("tabHostController", function($scope) {
     var data = localStorage.getItem("hasRun");
@@ -71,7 +72,13 @@ app.controller("introDialogZipController", function($scope) {
 
 //search.html functions
 app.controller("searchController", function($scope) {
+    if (localStorage.getItem("lists") === null) {
+                var lists = [];
+                lists[0] = {img: "http://apitest.retailigence.com/v2.1/rdr?id=l:ed4cbb2e-a6dc-4b61-b211-2d5e3f50e10b&requestId=4bb3e592-9763-4c98-aaf8-0d4ab30167c6&apikey=Rg7fUTHqwWL05Z8cvtTs_kp2un81oiH6", name: "VIZIO 39 Class 720p LED Smart TV - D39h-D0"};
+                localStorage.setItem("lists", JSON.stringify(lists));
+    }
     $("#ResultBar").hide();
+    
     
     $scope.popFilter = function(){
         ons.createPopover('top/tabs/filterPopOver.html').then(function(popover) {
@@ -80,7 +87,40 @@ app.controller("searchController", function($scope) {
         });
     };
 
+    $scope.addToWatch = function(material) {
+    var mod = material ? 'material' : undefined;
+        ons.notification.confirm({
+          message: 'Add ' + itemToAdd + ' to watch list?',
+          modifier: mod,
+          callback: function(idx) {
+            switch (idx) {
+              case 0:
+                break;
+              case 1:
+                var listArray = JSON.parse(localStorage.getItem("lists"));
+                if(currentItem.product.images[1].ImageInfo.link !== undefined && currentItem.product.name !== undefined && currentItem.product.id !== undefined){
+                    listArray[listArray.length] = {img: currentItem.product.images[1].ImageInfo.link, name: currentItem.product.name, productID: currentItem.product.id};
+                    console.log(listArray);
+                    ons.notification.alert({
+                      message: 'Item added!',
+                      modifier: mod
+                    });
+                }
+                else{
+                    ons.notification.alert({
+                      message: 'Sorry! Item is not able to be tracked',
+                      modifier: mod
+                    });
+                }
+                
+                break;
+            }
+          }
+        });
+      };
+
     $scope.resultClick = function(data){
+        currentItem = data;
         document.addEventListener("backbutton", function(){
             //TODO: Fix this.....
             $("#ResultDetails").hide();
@@ -100,9 +140,14 @@ app.controller("searchController", function($scope) {
         $scope.img = data.product.images[1].ImageInfo.link;
         $scope.latitude = data.location.location.latitude;
         $scope.longitude = data.location.location.longitude;
-        $scope.phoneNum = data.location.phone;
-        $scope.hours = data.location.hours;
         
+        //Phone  numbering formatting
+        var numData = data.location.phone;
+        var tempPhone = numData.toString();
+        $scope.phoneNum = '(' + tempPhone.substr(0,3) + ')' + ' ' + tempPhone.substr(3,3) + '-' + tempPhone.substr(6,4);
+        //end phone formatting
+        $scope.hours = data.location.hours;
+        itemToAdd = $scope.name;
         downloadJSON(data.product.inventory, function(data){
             
             console.log(data);
@@ -122,12 +167,14 @@ app.controller("searchController", function($scope) {
             $scope.$apply();
         });
         
+        $("#map").html("<iframe width='600' height='450' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/view?zoom=14&center=" + $scope.latitude + "," + $scope.longitude + "&key=AIzaSyDxRkOfiwcsRNjpJzoPI0ej8AvG4VYnnIo' allowfullscreen></iframe>");
+        
     };
 
     $scope.backClick = function(){
         $("#ResultDetails").hide();
         $("#SearchResultList").show();
-    }
+    };
 
     $scope.search = function() {
         $("#ResultBar").hide();
@@ -283,3 +330,4 @@ app.controller("filterPopController", function($scope) {
         return $scope.shownGroup === group;
     };
 });
+

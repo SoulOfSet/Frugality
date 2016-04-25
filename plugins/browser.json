@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "io.onsen.helloworld"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "io.onsen.helloworld"
         }
     },
     "dependent_plugins": {}
