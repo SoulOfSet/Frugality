@@ -3,7 +3,7 @@
     
     <div id="SearchSection">
         <div style="margin-top: 2%; margin-bottom: 2%;" class="center"><input id="TxtSearch" type="text" class="search-input" placeholder="Search"></input></div>
-        <ons-button modifier="large--cta" ng-click="search()">Search</ons-button>
+        <ons-button modifier="large--cta" ng-click="search('name')">Search</ons-button>
     </div>
     <div id="SearchResultList">
         <div style="width: 100%" id="ResultBar">
@@ -17,26 +17,27 @@
 
             </div>
             <ons-list id="ResultList">
-                <ons-list-item id="container" style="hover: gray;" ng-click="resultClick(this.item)"  ng-repeat="item in currData.items">
-                    <div  id="image" style="; display:inline-block;"><img height="75vw" width="75vw" src="{{item.product.images[1].ImageInfo.link}}"></div>
-                    <div class="flexText" id="name">{{item.product.name}}</br>{{item.location.name}}</div>
-                    <div class="flexText" id="price">${{item.price}}</div>
+                <ons-list-item class="container" style="hover: gray;" ng-click="resultClick(this.item)"  ng-repeat="item in currData.items">
+                    <div class="itemImg" id="image" style="; display:inline-block;"><img height="75vw" width="75vw" src="{{item.product.images[1].ImageInfo.link}}"></div>
+                    <div class="itemInfo" id="name">{{item.product.name}}</br>{{item.location.name}}</div>
+                    <div class="itemPrice" id="price">${{item.price}}</br>{{item.</div>
                 </ons-list-item>
             </ons-list>
         </div>
     </div>
     <div id="ResultDetails" style="display: none; height: 100%">
         <ons-icon  id="backButton" ng-click="backClick()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-arrow-left-c" style="font-size: 32px; width: 1em;"></ons-icon>
-        <ons-icon  id="addButton" ng-click="addToWatch()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-plus" style="font-size: 32px; width: 1em;"></ons-icon>
-        <img src="{{img}}"></img>
-        <p>Product: {{name}}</p>
-        <p>Address: {{address}}</p>
+        <ons-icon  id="addButton" ng-click="addToWatch(true)" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-plus" style="font-size: 32px; width: 1em;"></ons-icon>
+        <img width="150vw" height="150vw" src="{{img}}"></img>
+        <p>Product Name: {{name}}</p>
+        <p>Type: {{type}}</p>
         <p>Price: ${{price}}</p>
-        <p>Zip-Code: {{zip}}</p>
-        <p>State: {{state}}</p>
         <p>Availability: {{inStock}}</p>
         <p>Qty: {{numInStock}}</p>
-        <p>Phone: {{phoneNum}}</p>
+        <p>Address: {{address}}</p>
+        <p>State: {{state}}</p>
+        <p>Zip-Code: {{zip}}</p>
+        <p>Phone: <a href="tel:{{phoneNum}}">{{phoneNum}}</a></p>
         <p>Store Hours: {{hours}}</p>
         <div id="map"></div>
     </div>

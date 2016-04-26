@@ -27,6 +27,11 @@ var updateZip = function(zip){
     localStorage.setItem("zip", zip);
 };
 
+//update radius
+var updateRadius = function(radius){
+    localStorage.setItem("radius", radius);
+}
+
 var downloadJSON = function(url, doSuccess, doFail){
         $.ajax({
             url: url,
@@ -43,7 +48,3 @@ var downloadJSON = function(url, doSuccess, doFail){
             }
         });
     };
-    
-var addList = function(listName){
-    
-};

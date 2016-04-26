@@ -1,9 +1,13 @@
 var zipReg = /^\d{5}$/;
-
+var radiusReg = /^[0-9]*(?:\.\d{1,2})?$/;
 //TODO: Scope this down relatively
 var currentList = new Object();
 var itemToAdd;
 var currentItem;
+var queueActive = false;
+var queueItem;
+var queueType; 
+var queueItemName;
 //home.html functions
 app.controller("tabHostController", function($scope) {
     var data = localStorage.getItem("hasRun");
@@ -70,69 +74,105 @@ app.controller("introDialogZipController", function($scope) {
     }
 });
 
+//enter_radius.html functions
+app.controller("introDialogRadiusController", function($scope) {
+    $scope.validateRadius = function() {
+        if (!radiusReg.test($scope.Radius)) {
+            $scope.RadiusError = "Please enter a valid numeric radius";
+        } else {
+            updateRadius($scope.Radius);
+            console.log("Search radius changed to  " + $scope.Radius);
+            introDialogRadius.hide();
+        }
+    }
+});
+
 //search.html functions
 app.controller("searchController", function($scope) {
     if (localStorage.getItem("lists") === null) {
-                var lists = [];
-                lists[0] = {img: "http://apitest.retailigence.com/v2.1/rdr?id=l:ed4cbb2e-a6dc-4b61-b211-2d5e3f50e10b&requestId=4bb3e592-9763-4c98-aaf8-0d4ab30167c6&apikey=Rg7fUTHqwWL05Z8cvtTs_kp2un81oiH6", name: "VIZIO 39 Class 720p LED Smart TV - D39h-D0"};
-                localStorage.setItem("lists", JSON.stringify(lists));
+        var lists = [];
+        lists[0] = {
+            img: "http://apitest.retailigence.com/v2.1/rdr?id=l:ed4cbb2e-a6dc-4b61-b211-2d5e3f50e10b&requestId=4bb3e592-9763-4c98-aaf8-0d4ab30167c6&apikey=Rg7fUTHqwWL05Z8cvtTs_kp2un81oiH6",
+            name: "VIZIO 39 Class 720p LED Smart TV - D39h-D0",
+            productID: "ed4cbb2e-a6dc-4b61-b211-2d5e3f50e10b"
+        };
+        localStorage.setItem("lists", JSON.stringify(lists));
     }
+    
+    if(localStorage.getItem("radius") === null){
+        updateRadius("30");
+    }
+    
     $("#ResultBar").hide();
-    
-    
-    $scope.popFilter = function(){
+
+
+    $scope.popFilter = function() {
         ons.createPopover('top/tabs/filterPopOver.html').then(function(popover) {
-               $scope.popover = popover;
-               popover.show("#filterIcon");
+            $scope.popover = popover;
+            popover.show("#filterIcon");
         });
     };
 
     $scope.addToWatch = function(material) {
-    var mod = material ? 'material' : undefined;
+        var itemExist = false;
+        var mod = material ? 'material' : undefined;
         ons.notification.confirm({
-          message: 'Add ' + itemToAdd + ' to watch list?',
-          modifier: mod,
-          callback: function(idx) {
-            switch (idx) {
-              case 0:
-                break;
-              case 1:
-                var listArray = JSON.parse(localStorage.getItem("lists"));
-                if(currentItem.product.images[1].ImageInfo.link !== undefined && currentItem.product.name !== undefined && currentItem.product.id !== undefined){
-                    listArray[listArray.length] = {img: currentItem.product.images[1].ImageInfo.link, name: currentItem.product.name, productID: currentItem.product.id};
-                    console.log(listArray);
-                    ons.notification.alert({
-                      message: 'Item added!',
-                      modifier: mod
-                    });
-                }
-                else{
-                    ons.notification.alert({
-                      message: 'Sorry! Item is not able to be tracked',
-                      modifier: mod
-                    });
-                }
-                
-                break;
-            }
-          }
-        });
-      };
+            message: 'Add ' + itemToAdd + ' to watch list?',
+            modifier: mod,
+            callback: function(idx) {
+                switch (idx) {
+                    case 0:
+                        break;
+                    case 1:
+                        var listArray = JSON.parse(localStorage.getItem("lists"));
+                        $.each(listArray, function(i, item) {
 
-    $scope.resultClick = function(data){
+                            if (item.productID == currentItem.product.id) {
+                                itemExist = true;
+                            }
+                        });
+                        if (itemExist) {
+                            ons.notification.alert({
+                                message: "You're already tracking this item",
+                                modifier: mod
+                            });
+                        } else {
+                            if (currentItem.product.images[1].ImageInfo.link !== undefined && currentItem.product.name !== undefined && currentItem.product.id !== undefined) {
+                                listArray[listArray.length] = {
+                                    img: currentItem.product.images[1].ImageInfo.link,
+                                    name: currentItem.product.name,
+                                    productID: currentItem.product.id
+                                };
+                                localStorage.setItem("lists", JSON.stringify(listArray));
+                            } else {
+                                ons.notification.alert({
+                                    message: 'Sorry! Item is not able to be tracked',
+                                    modifier: mod
+                                });
+                            }
+                        }
+
+                        break;
+                }
+            }
+        });
+    };
+
+    $scope.resultClick = function(data) {
         currentItem = data;
-        document.addEventListener("backbutton", function(){
+        document.addEventListener("backbutton", function() {
             //TODO: Fix this.....
             $("#ResultDetails").hide();
             $("#SearchResultList").show();
         }, false);
-        
+
         $("#SearchResultList").hide();
         $("#ResultDetails").show();
         console.log(data);
         $scope.inStock = "Loading...";
         $scope.numInStock = "";
         $scope.name = data.product.name;
+
         $scope.address = data.location.address.address1;
         $scope.price = data.price;
         $scope.zip = data.location.address.postal;
@@ -140,52 +180,85 @@ app.controller("searchController", function($scope) {
         $scope.img = data.product.images[1].ImageInfo.link;
         $scope.latitude = data.location.location.latitude;
         $scope.longitude = data.location.location.longitude;
-        
-        //Phone  numbering formatting
+
+        //Product category designation
+        if (data.product.productCategory === undefined) {
+            if (data.product.productType !== undefined) {
+                $scope.type = data.product.productType[0];
+            } else {
+                $scope.type = "Unknown";
+            }
+        } else {
+            $scope.type = data.product.productCategory[0];
+        }
+
+        //Phone number formatting
         var numData = data.location.phone;
         var tempPhone = numData.toString();
-        $scope.phoneNum = '(' + tempPhone.substr(0,3) + ')' + ' ' + tempPhone.substr(3,3) + '-' + tempPhone.substr(6,4);
+        $scope.phoneNum = '(' + tempPhone.substr(0, 3) + ')' + ' ' + tempPhone.substr(3, 3) + '-' + tempPhone.substr(6, 4);
         //end phone formatting
-        $scope.hours = data.location.hours;
+        
+        //Store hours formatting
+        //var hData = data.location.hours;
+        var hData = "1:10:00:10:00,2:10:00:10:00,3:10:00:10:00,4:10:00:10:00,5:10:00:10:00,6:10:00:10:00,7:10:00:10:00";
+        var sepData = hData.split(",");
+        
+        for(var i = 0; i < 7; i++)
+        {
+            var day = sepData[i];
+            format = day.substr(0)
+            switch(format)
+            {
+                case "1":
+                    format2 = ""
+            }
+        }
+        
+        $scope.hours = day;
+        //$scope.hours = data.location.hours;
+        //end hours formatting
+        
         itemToAdd = $scope.name;
-        downloadJSON(data.product.inventory, function(data){
-            
+        downloadJSON(data.product.inventory, function(data) {
+
             console.log(data);
-            if(data.RetailigenceAPIResult.messages !== undefined){
+            if (data.RetailigenceAPIResult.messages !== undefined) {
                 $scope.inStock = "N/A";
                 $scope.numInStock = "N/A";
-            }
-            else{
+            } else {
                 $scope.inStock = data.RetailigenceAPIResult.results[0].ProductLocation.quantityText;
                 $scope.numInStock = data.RetailigenceAPIResult.results[0].ProductLocation.quantity;
             }
             $scope.$apply();
-        }, function(){
+        }, function() {
             console.log("Getting inventory data failed");
             $scope.inStock = "N/A";
             $scope.numInStock = "N/A";
             $scope.$apply();
         });
-        
+
         $("#map").html("<iframe width='600' height='450' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/view?zoom=14&center=" + $scope.latitude + "," + $scope.longitude + "&key=AIzaSyDxRkOfiwcsRNjpJzoPI0ej8AvG4VYnnIo' allowfullscreen></iframe>");
-        
+
     };
 
-    $scope.backClick = function(){
+    $scope.backClick = function() {
         $("#ResultDetails").hide();
         $("#SearchResultList").show();
     };
 
-    $scope.search = function() {
+    $scope.search = function(type, query, name) {
+        var cleanName = name;
+        console.log(type);
+        console.log(query);
         $("#ResultBar").hide();
         $("#ResultDetails").hide();
         $("#SearchResultList").show();
         $scope.currData = {};
         $("#ResultError").html("");
-        data.editExtraParam("add", "range", "500");
+        data.editExtraParam("replace", "range", localStorage.getItem("radius"));
         data.editExtraParam("add", "pageSize", "30");
         data.editExtraParam("add", "expandResults", "true");
-        data.setSearchType("name");
+        data.setSearchType(type);
         if (localStorage.getItem("prefLocationType") != null) {
             var locationType = localStorage.getItem("prefLocationType"); //Get location type
 
@@ -197,7 +270,11 @@ app.controller("searchController", function($scope) {
                 data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
             }
         }
-        data.search($('#TxtSearch').val(), function(worked) {
+        if(query == null){
+            query = $('#TxtSearch').val();
+            cleanName = $('#TxtSearch').val();
+        }
+        data.search(query, function(worked) {
             if (worked) {
                 console.log("Search came back as successful from the wrapper");
                 var emptyResult;
@@ -216,7 +293,7 @@ app.controller("searchController", function($scope) {
                 //First we need the make sure the search actually worked. Get the length of the return data
                 var returnLength = workingData.count;
                 $scope.searchCount = returnLength;
-                $scope.searchName = $('#TxtSearch').val();
+                $scope.searchName = cleanName;
                 $("#ResultBar").show();
                 if (returnLength == 0) { //Either something broke or there were not results
                     var errorData = workingData.messages;
@@ -262,23 +339,23 @@ app.controller("searchController", function($scope) {
                         console.log(filterData);
 
                         //Go through each of the filter categories and make sure that the data doesnt exist already
-                        $.each(filterData.productCategory, function(x, category){
+                        $.each(filterData.productCategory, function(x, category) {
                             console.log(category);
-                            if(currentList.categories[category] === undefined){
+                            if (currentList.categories[category] === undefined) {
                                 currentList.categories[category] = "";
                             }
-                           currentList.categories[category] += "/" + i;
+                            currentList.categories[category] += "/" + i;
                             console.log(currentList.categories[category]);
                         });
-                        $.each(filterData.productType, function(x, type){
-                            if(currentList.types[type] === undefined){
+                        $.each(filterData.productType, function(x, type) {
+                            if (currentList.types[type] === undefined) {
                                 currentList.types[type] = "";
                             }
-                           currentList.types[type] += "/" + i;
+                            currentList.types[type] += "/" + i;
                             console.log(currentList.categories[type]);
                         });
 
-                        if(currentList.cities[filterData.city] === undefined){
+                        if (currentList.cities[filterData.city] === undefined) {
                             currentList.cities[filterData.city] = "";
                         }
                         currentList.cities[filterData.city] += "/" + i;
@@ -294,6 +371,13 @@ app.controller("searchController", function($scope) {
                 $("ResultError").html("Sorry something went wrong. Please try again.\nIf this persists please try restarting the application and reset your location in settings");
             }
         });
+    };
+    if(queueActive == true){
+        $scope.search(queueType, queueItem, queueItemName);
+        queueActive = false;
+        queueItem = null;
+        queueType = null; 
+        queueItemName = null;
     }
 
 });
@@ -305,15 +389,33 @@ app.controller("settingsController", function($scope) {
             dialog.show();
         });
     }
+    $scope.setRadius = function() {
+        ons.createDialog('top/dialogs/enter_radius.html').then(function(dialog) {
+            dialog.show();
+        });
+    }
+    $scope.clearLocalData = function(){
+        localStorage.clear();
+        location.reload();
+    }
 });
 
 //filterPopover.html functions
 app.controller("filterPopController", function($scope) {
     $scope.groups = [];
 
-    $scope.groups[0] = {name: "Cities", items: []};
-    $scope.groups[1] = {name: "Categories", items: []};
-    $scope.groups[2] = {name: "Types", items: []};
+    $scope.groups[0] = {
+        name: "Cities",
+        items: []
+    };
+    $scope.groups[1] = {
+        name: "Categories",
+        items: []
+    };
+    $scope.groups[2] = {
+        name: "Types",
+        items: []
+    };
 
     /*
      * if given group is the selected group, deselect it
@@ -331,3 +433,40 @@ app.controller("filterPopController", function($scope) {
     };
 });
 
+
+//watching.html functions
+app.controller("watchListController", function($scope) {
+    $scope.watching = JSON.parse(localStorage.getItem("lists"));
+    $scope.watchItemTap = function(data){
+        console.log(data);
+        queueActive = true;
+        queueItem = data.productID;
+        queueType = "productID";
+        queueItemName = data.name;
+        tabHost.setActiveTab(0);
+    };
+    
+    $scope.removeItem = function(data){
+        console.log("swipe");
+        console.log(data);
+        var itemList = JSON.parse(localStorage.getItem("lists"));
+        var newList = $.grep(itemList, function(e){ 
+             return e.productID != data.productID; 
+        });
+        console.log(newList);
+        localStorage.setItem("lists", JSON.stringify(newList));
+        $scope.watching = JSON.parse(localStorage.getItem("lists"));
+    };
+});
+
+//barcode.html functions
+app.controller("barcodeController", function($scope, $cordovaBarcodeScanner) {
+    $cordovaBarcodeScanner
+      .scan()
+      .then(function(barcodeData) {
+          console.log(barcodeData)
+        // Success! Barcode data is here
+      }, function(error) {
+        // An error occurred
+      });
+});
