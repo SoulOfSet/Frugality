@@ -9,13 +9,17 @@
             <div class="center">Frugality</div>
         </ons-toolbar>
 
-        <ons-tabbar position="top">
+        <ons-tabbar var="tabHost" position="top">
             <ons-tab page="top/tabs/search.html" active="true">
                 <ons-icon icon="ion-search"></ons-icon>
                 <span style="font-size: 14px"></span>
             </ons-tab>
-            <ons-tab page="top/tabs/watching.html" active="true">
+            <ons-tab page="top/tabs/watching.html" active="false">
                 <ons-icon icon="ion-eye"></ons-icon>
+                <span style="font-size: 14px"></span>
+            </ons-tab>
+            <ons-tab page="top/tabs/barcode.html" active="false">
+                <ons-icon icon="ion-camera"></ons-icon>
                 <span style="font-size: 14px"></span>
             </ons-tab>
         </ons-tabbar>

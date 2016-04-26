@@ -1,0 +1,60 @@
+{
+  "name": "flexbox",
+  "version": "0.0.3",
+  "description": "A collection of flexbox utilities and components.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johnotander/flexbox.git"
+  },
+  "keywords": [
+    "css3",
+    "css",
+    "flex",
+    "flexbox",
+    "grid",
+    "lightweight",
+    "media",
+    "media object"
+  ],
+  "author": {
+    "name": "John Otander"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johnotander/flexbox/issues"
+  },
+  "homepage": "https://github.com/johnotander/flexbox",
+  "devDependencies": {
+    "colors.css": "^1.0.0",
+    "gulp": "^3.8.8",
+    "gulp-minify-css": "^0.3.10",
+    "gulp-rename": "^1.2.0",
+    "gulp-sass": "^0.7.3"
+  },
+  "gitHead": "09cb701c1da910c1fb187ba76a3c11b5e5cdfc79",
+  "_id": "flexbox@0.0.3",
+  "_shasum": "b4d03395734a19dba566ba02752c95b603c44cf7",
+  "_from": "flexbox@latest",
+  "_npmVersion": "2.1.4",
+  "_nodeVersion": "0.10.32",
+  "_npmUser": {
+    "name": "johno",
+    "email": "johnotander@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "johno",
+      "email": "johnotander@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "b4d03395734a19dba566ba02752c95b603c44cf7",
+    "tarball": "https://registry.npmjs.org/flexbox/-/flexbox-0.0.3.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/flexbox/-/flexbox-0.0.3.tgz"
+}

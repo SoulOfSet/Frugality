@@ -1,0 +1,15 @@
+<ons-page id="enter_radius.html">
+    <ons-dialog var="introDialogRadius" ng-controller="introDialogRadiusController" cancelable>
+        <ons-toolbar inline>
+            <div class="center">
+                Enter your radius
+            </div>
+        </ons-toolbar>
+        <div class="center">
+            <p style="text-align: center">Please Enter Your Desired Radius</p>
+            <input style="width: 100%" ng-model="Radius" type="text" class="text-input" placeholder="Search radius in miles" />
+            <p class="error-message" style="color: #ff3e19; text-align: center">{{RadiusError}}</p>
+            <p><ons-button modifier="large" ng-click="validateRadius()">Submit</ons-button></p>
+        </div>
+    </ons-dialog>
+</ons-page>

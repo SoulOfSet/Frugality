@@ -11,6 +11,17 @@
         <ons-list-item modifier="tappable" ng-click="setLocationPref()">
             Set Preferred Location
         </ons-list-item>
+        <ons-list-item modifier="tappable" ng-click="setRadius()">
+            Set Search Radius
+        </ons-list-item>
     </ons-list>
-    <div class="settings-header">Others</div>
+    <div class="settings-header">Other</div>
+    <ons-list modifier="inset" class="settings-list">
+        <ons-list-item modifier="tappable" ng-click="setAdultContent()">
+            Allow Adult Content
+        </ons-list-item>
+        <ons-list-item modifier="tappable" ng-click="clearLocalData()">
+            Clear Local Data
+        </ons-list-item>
+    </ons-list>
 </ons-page>
