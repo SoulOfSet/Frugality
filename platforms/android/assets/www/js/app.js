@@ -10,6 +10,9 @@ var queueType;
 var queueItemName;
 //home.html functions
 app.controller("tabHostController", function($scope, $cordovaBarcodeScanner) {
+    document.addEventListener('ons-tabbar:init', function(event) {
+    //tabHost.setActiveTab(1);
+    });
     var data = localStorage.getItem("hasRun");
     if (data == "false") {
         ons.createDialog('top/dialogs/intro_dialog.html').then(function(dialog) {
@@ -20,7 +23,12 @@ app.controller("tabHostController", function($scope, $cordovaBarcodeScanner) {
         $cordovaBarcodeScanner
           .scan()
           .then(function(barcodeData) {
-              console.log(barcodeData)
+              console.log(data);
+                queueActive = true;
+                queueItem = barcodeData.text;
+                queueType = "productID";
+                queueItemName = barcodeData.text;
+                tabHost.setActiveTab(0);
             // Success! Barcode data is here
           }, function(error) {
             // An error occurred
@@ -116,6 +124,10 @@ app.controller("searchController", function($scope) {
     $("#ResultBar").hide();
 
 
+    $scope.viewMap = function(){
+        parentNavigator.app.loadUrl("https://www.google.com/maps/embed/v1/view?zoom=14&center=" + $scope.latitude + "," + $scope.longitude + "&key=AIzaSyDxRkOfiwcsRNjpJzoPI0ej8AvG4VYnnIo'");
+    };
+    
     $scope.popFilter = function() {
         ons.createPopover('top/tabs/filterPopOver.html').then(function(popover) {
             $scope.popover = popover;
@@ -170,12 +182,6 @@ app.controller("searchController", function($scope) {
 
     $scope.resultClick = function(data) {
         currentItem = data;
-        document.addEventListener("backbutton", function() {
-            //TODO: Fix this.....
-            $("#ResultDetails").hide();
-            $("#SearchResultList").show();
-        }, false);
-
         $("#SearchResultList").hide();
         $("#ResultDetails").show();
         console.log(data);
@@ -203,59 +209,84 @@ app.controller("searchController", function($scope) {
         }
 
         //Phone number formatting
+        var oTime;
+        var cTime;
         var numData = data.location.phone;
         var tempPhone = numData.toString();
         $scope.phoneNum = '(' + tempPhone.substr(0, 3) + ')' + ' ' + tempPhone.substr(3, 3) + '-' + tempPhone.substr(6, 4);
         //end phone formatting
         
         //Store hours formatting
-        //var hData = data.location.hours;
-        var day;
-        var hData = "1:10:00:10:00,2:10:00:10:00,3:10:00:10:00,4:10:00:10:00,5:10:00:10:00,6:10:00:10:00,7:10:00:10:00";
-        var sepData = hData.split(",");
+		var day;
+        var hData = data.location.hours; // pulls info from the database
+		var sepData = hData.split(","); // creates an array of 7 data items
+		var fHours = "";
+		
+		for(var i = 0; i < 7; i++) //trverses through the array
+		{
+			var dData = sepData[i];
+			var daySwitch = dData.substr(0,1); // pulls the first character in an item
+			                                   // this number represents the day of the week
+			
+			switch(daySwitch)
+			{
+			    case "1":
+			        day = "Sun: ";
+			        break;
+			    case "2":
+			        day = "Mon: ";
+			        break;
+			    case "3":
+			        day = "Tue: ";
+			        break;
+			    case "4":
+				    day = "Wed: ";
+				    break;
+			    case "5":
+				    day = "Thur: ";
+				    break;
+			    case "6":
+				    day = "Fri: ";
+				    break;
+			    case "7":
+				    day = "Sat: ";
+				    break;	
+			}
+			// This section pulls the rest of the info for open time and close time
+			
+			if(dData.length == 11) // a situation where the store is open in the range of 1am to 9am
+			{
+			    oTime = dData.substr(2,4);
+			    cTime = dData.substr(7,4);
+			}
+			else if(dData.length == 12 && dData.substr(3,1) == ":") // open in range of 1am to 23:59
+			{
+			    oTime = dData.substr(2,4);
+			    cTime = dData.substr(7,5); 
+			}
+			else if(dData.length == 12 && dData.substr(7,1) == ":") // opens in age of 10am to 9am
+			{
+			    oTime = dData.substr(2,5);
+			    cTime = dData.substr(8,4); 
+			}
+			else                                                    //opens in range of 10am to 23:59
+			{
+			    oTime = dData.substr(2,5);
+			    cTime = dData.substr(8,5);
+			}
+			
+			var dBlock = day + oTime + " - " + cTime + " ";        //combines data to form 1 day of data
+			
+			fHours = fHours + dBlock;                              //combines 7 days of data
+			console.log(fHours);                                   // 
+			
+			
+			
+		}
         
-        for(var i = 0; i < 7; i++)
-        {
-            var dData = sepData[i];
-            var daySwitch = dData.substr(0,1);
-            
-            switch(daySwitch)
-            {
-                case "1":
-                    day = "Sunday"
-                    break;
-                case "2":
-                    day = "Monday"
-                    break;
-                case "3":
-                    day = "Tuesday"
-                    break;
-                case "4":
-                    day = "Wednesday"
-                    break;
-                case "5":
-                    day = "Thursday"
-                    break;
-                case "6":
-                    day = "Friday"
-                    break;
-                case "7":
-                    day = "Saturday"
-                    break;
-            }
-            
-            var oTime = dData.substr(2,5);
-            var cTime = dData.substr(8,5);
-            
-            var dayBlock = day + " " + oTime + " - " + cTime;
-            
-            dayBlock += dayBlock;
-           
-        }
-        
-        $scope.hours = dayBlock;
+         $scope.hours = fHours; //sends formatted data to activity
         //$scope.hours = data.location.hours;
-        //end hours formatting
+        //end hours formatting1
         
         itemToAdd = $scope.name;
         downloadJSON(data.product.inventory, function(data) {
@@ -286,6 +317,8 @@ app.controller("searchController", function($scope) {
     };
 
     $scope.search = function(type, query, name) {
+        $scope.searchCount = "";
+        $scope.searchName = "";
         var cleanName = name;
         console.log(type);
         console.log(query);
@@ -498,7 +531,3 @@ app.controller("watchListController", function($scope) {
     };
 });
 
-//barcode.html functions
-app.controller("barcodeController", function($scope, $cordovaBarcodeScanner) {
-    
-});

@@ -12,6 +12,9 @@
         },
         "phonegap-plugin-barcodescanner": {
             "PACKAGE_NAME": "io.onsen.helloworld"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "io.onsen.helloworld"
         }
     },
     "dependent_plugins": {}
