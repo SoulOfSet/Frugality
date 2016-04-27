@@ -537,7 +537,7 @@
     },
     "installed_plugins": {
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.soulsoftworks.frugality"
+            "PACKAGE_NAME": "io.onsen.helloworld"
         },
         "phonegap-plugin-barcodescanner": {
             "PACKAGE_NAME": "io.onsen.helloworld"
@@ -553,7 +553,6 @@
         {
             "file": "plugins/phonegap-plugin-barcodescanner/www/barcodescanner.js",
             "id": "phonegap-plugin-barcodescanner.BarcodeScanner",
-            "pluginId": "phonegap-plugin-barcodescanner",
             "clobbers": [
                 "cordova.plugins.barcodeScanner"
             ]
