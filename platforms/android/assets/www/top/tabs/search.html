@@ -20,7 +20,7 @@
                 <ons-list-item class="container" style="hover: gray;" ng-click="resultClick(this.item)"  ng-repeat="item in currData.items">
                     <div class="itemImg" id="image" style="; display:inline-block;"><img height="75vw" width="75vw" src="{{item.product.images[1].ImageInfo.link}}"></div>
                     <div class="itemInfo" id="name">{{item.product.name}}</br>{{item.location.name}}</div>
-                    <div class="itemPrice" id="price">${{item.price}}</br>{{item.</div>
+                    <div class="itemPrice" id="price">${{item.price}}</div>
                 </ons-list-item>
             </ons-list>
         </div>
@@ -29,6 +29,8 @@
         <ons-icon  id="backButton" ng-click="backClick()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-arrow-left-c" style="font-size: 32px; width: 1em;"></ons-icon>
         <ons-icon  id="addButton" ng-click="addToWatch(true)" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-plus" style="font-size: 32px; width: 1em;"></ons-icon>
         <img width="150vw" height="150vw" src="{{img}}"></img>
+        
+        <p>Location: {{locationName}}</p>
         <p>Product Name: {{name}}</p>
         <p>Type: {{type}}</p>
         <p>Price: ${{price}}</p>

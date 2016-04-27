@@ -9,12 +9,22 @@ var queueItem;
 var queueType; 
 var queueItemName;
 //home.html functions
-app.controller("tabHostController", function($scope) {
+app.controller("tabHostController", function($scope, $cordovaBarcodeScanner) {
     var data = localStorage.getItem("hasRun");
     if (data == "false") {
         ons.createDialog('top/dialogs/intro_dialog.html').then(function(dialog) {
             dialog.show();
         });
+    }
+    $scope.openScanner = function(){
+        $cordovaBarcodeScanner
+          .scan()
+          .then(function(barcodeData) {
+              console.log(barcodeData)
+            // Success! Barcode data is here
+          }, function(error) {
+            // An error occurred
+          });
     }
 });
 
@@ -172,7 +182,7 @@ app.controller("searchController", function($scope) {
         $scope.inStock = "Loading...";
         $scope.numInStock = "";
         $scope.name = data.product.name;
-
+        $scope.locationName = data.location.name;
         $scope.address = data.location.address.address1;
         $scope.price = data.price;
         $scope.zip = data.location.address.postal;
@@ -197,7 +207,56 @@ app.controller("searchController", function($scope) {
         var tempPhone = numData.toString();
         $scope.phoneNum = '(' + tempPhone.substr(0, 3) + ')' + ' ' + tempPhone.substr(3, 3) + '-' + tempPhone.substr(6, 4);
         //end phone formatting
-        $scope.hours = data.location.hours;
+        
+        //Store hours formatting
+        //var hData = data.location.hours;
+        var day;
+        var hData = "1:10:00:10:00,2:10:00:10:00,3:10:00:10:00,4:10:00:10:00,5:10:00:10:00,6:10:00:10:00,7:10:00:10:00";
+        var sepData = hData.split(",");
+        
+        for(var i = 0; i < 7; i++)
+        {
+            var dData = sepData[i];
+            var daySwitch = dData.substr(0,1);
+            
+            switch(daySwitch)
+            {
+                case "1":
+                    day = "Sunday"
+                    break;
+                case "2":
+                    day = "Monday"
+                    break;
+                case "3":
+                    day = "Tuesday"
+                    break;
+                case "4":
+                    day = "Wednesday"
+                    break;
+                case "5":
+                    day = "Thursday"
+                    break;
+                case "6":
+                    day = "Friday"
+                    break;
+                case "7":
+                    day = "Saturday"
+                    break;
+            }
+            
+            var oTime = dData.substr(2,5);
+            var cTime = dData.substr(8,5);
+            
+            var dayBlock = day + " " + oTime + " - " + cTime;
+            
+            dayBlock += dayBlock;
+           
+        }
+        
+        $scope.hours = dayBlock;
+        //$scope.hours = data.location.hours;
+        //end hours formatting
+        
         itemToAdd = $scope.name;
         downloadJSON(data.product.inventory, function(data) {
 
@@ -235,7 +294,7 @@ app.controller("searchController", function($scope) {
         $("#SearchResultList").show();
         $scope.currData = {};
         $("#ResultError").html("");
-        data.editExtraParam("add", "range", localStorage.getItem("radius"));
+        data.editExtraParam("replace", "range", localStorage.getItem("radius"));
         data.editExtraParam("add", "pageSize", "30");
         data.editExtraParam("add", "expandResults", "true");
         data.setSearchType(type);
@@ -441,12 +500,5 @@ app.controller("watchListController", function($scope) {
 
 //barcode.html functions
 app.controller("barcodeController", function($scope, $cordovaBarcodeScanner) {
-    $cordovaBarcodeScanner
-      .scan()
-      .then(function(barcodeData) {
-          console.log(barcodeData)
-        // Success! Barcode data is here
-      }, function(error) {
-        // An error occurred
-      });
+    
 });
