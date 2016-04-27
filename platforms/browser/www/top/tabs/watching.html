@@ -5,8 +5,8 @@
     <div = "watchList">
         <ons-list>
             <ons-list-item class="container" style="hover: gray;" ng-click="watchItemTap(this.item)" ng-swipe-left="removeItem(this.item)" ng-repeat="item in watching">
-                        <div  id="image" style="display:inline-block;"><img height="75vw" width="75vw" src="{{item.img}}"></div>
-                        <div class="flexText" id="name">{{item.name}}</div>
+                        <div id="image" class="itemImg" style="display:inline-block;"><img height="75vw" width="75vw" src="{{item.img}}"></div>
+                        <div class="itemInfo" style="padding-left: 1%" class="flexText" id="name">{{item.name}}</div>
             </ons-list-item>
         </ons-list>
     </div>

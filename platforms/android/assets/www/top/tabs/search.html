@@ -26,21 +26,36 @@
         </div>
     </div>
     <div id="ResultDetails" style="display: none; height: 100%">
-        <ons-icon  id="backButton" ng-click="backClick()" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-arrow-left-c" style="font-size: 32px; width: 1em;"></ons-icon>
-        <ons-icon  id="addButton" ng-click="addToWatch(true)" size="7vw" style="float: right; margin-right: 3%; margin-top: 0.5%; color: blue" icon="ion-plus" style="font-size: 32px; width: 1em;"></ons-icon>
-        <img width="150vw" height="150vw" src="{{img}}"></img>
+        <div id="ResultsContainer">
+            <div id="ImgBlock">
+                <div id="IconContainer">
+                    
+                    <ons-icon id="BackButton" size="10vw" ng-click="backClick()" icon="ion-arrow-left-c"></ons-icon>
+                    <img id="ResultImg" src="{{img}}"></img>
+                    <ons-icon id="WatchButton" size="8vw" ng-click="addToWatch(true)" icon="ion-plus"></ons-icon>
+                </div>
+            </div>
+            <div id="itemDetail">
+                <ons-list>
+                    <ons-list-item><p>Location: {{locationName}}</p></ons-list-item>
+                    <ons-list-item><p>Product Name: {{name}}</p></ons-list-item>
+                    <ons-list-item><p>Type: {{type}}</p></ons-list-item>
+                    <ons-list-item><p>Price: ${{price}}</p></ons-list-item>
+                    <ons-list-item><p>Availability: {{inStock}}</p></ons-list-item>
+                    <ons-list-item><p>Qty: {{numInStock}}</p></ons-list-item>
+                    <ons-list-item><p>Address: {{address}}</p></ons-list-item>
+                    <ons-list-item><p>State: {{state}}</p></ons-list-item>
+                    <ons-list-item><p>Zip-Code: {{zip}}</p></ons-list-item>
+                    <ons-list-item><p>Phone: <a class="button icon-left ion-ios7-telephone button-calm button-outline" href="tel:{{phoneNum}}">{{phoneNum}}</a></p></ons-list-item>
+                    <ons-list-item><p>Store Hours: {{hours}}</p></ons-list-item>
+                    <ons-list-item modifier="chevron" ng-click="viewMap()"><p>View on map</p></ons-list-item>
+                </ons-list>
+            </div>
+            <div id="mapSection" style="display: none">
+                <ons-icon id="BackButton" size="10vw" ng-click="backClickMap()" icon="ion-arrow-left-c"></ons-icon>
+                <div id="map"></div>
+            </div>    
+        </div>
         
-        <p>Location: {{locationName}}</p>
-        <p>Product Name: {{name}}</p>
-        <p>Type: {{type}}</p>
-        <p>Price: ${{price}}</p>
-        <p>Availability: {{inStock}}</p>
-        <p>Qty: {{numInStock}}</p>
-        <p>Address: {{address}}</p>
-        <p>State: {{state}}</p>
-        <p>Zip-Code: {{zip}}</p>
-        <p>Phone: <a href="tel:{{phoneNum}}">{{phoneNum}}</a></p>
-        <p>Store Hours: {{hours}}</p>
-        <div id="map"></div>
     </div>
 </ons-page>
