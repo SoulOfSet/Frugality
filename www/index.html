@@ -65,7 +65,7 @@
             var connectionState = navigator.connection.type;
             if(connectionState == "none"){
                 ons.notification.alert({
-                    message: 'Hello, world!',
+                    message: 'Please connect to the internet. Shutting down.',
                     callback: function(){
                         navigator.app.exitApp();
                     }
