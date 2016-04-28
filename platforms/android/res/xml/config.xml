@@ -1,15 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.soulsoftworks.frugality" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <preference name="loglevel" value="DEBUG" />
-    <name>Frugality</name>
-    <description>
-        Find the lowest prices in your area fast and easy
-    </description>
-    <author email="admin@soulsoftworks.com" href="http://soulsoftworks.com">
-        Soul Softworks
-    </author>
-    <content src="index.html" />
-    <access origin="*" />
     <feature name="Camera">
         <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
     </feature>
@@ -29,4 +20,13 @@
     <feature name="BarcodeScanner">
         <param name="android-package" value="com.phonegap.plugins.barcodescanner.BarcodeScanner" />
     </feature>
+    <name>Frugality</name>
+    <description>
+        Find the lowest prices in your area fast and easy
+    </description>
+    <author email="admin@soulsoftworks.com" href="http://soulsoftworks.com">
+        Soul Softworks
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
 </widget>

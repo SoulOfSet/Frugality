@@ -125,7 +125,7 @@ app.controller("searchController", function($scope) {
 
 
     $scope.viewMap = function() {
-        window.open("https://www.google.com/maps/embed/v1/view?zoom=14&center=" + $scope.latitude + "," + $scope.longitude + "&key=AIzaSyDxRkOfiwcsRNjpJzoPI0ej8AvG4VYnnIo", '_system');
+        window.open($scope.googleMapLink);
     };
 
 
@@ -198,6 +198,7 @@ app.controller("searchController", function($scope) {
         $scope.latitude = data.location.location.latitude;
         $scope.longitude = data.location.location.longitude;
         $scope.description = data.product.descriptionLong;
+        $scope.googleMapLink = data.location.mapLink;
 
         //Product category designation
         if (data.product.productCategory === undefined) {
@@ -292,7 +293,7 @@ app.controller("searchController", function($scope) {
             }
 
 
-            var dBlock = day + oHour + ":" + oMinute + otimeOfDay + " - " + cHour + ":" + cMinute + ctimeOfDay + "  "; //combines data to form 1 day of data
+            var dBlock = "/ " + day + oHour + ":" + oMinute + otimeOfDay + " - " + cHour + ":" + cMinute + ctimeOfDay + " /"; //combines data to form 1 day of data
 
             fHours = fHours + dBlock; //combines 7 days of data
             console.log(fHours); // 
