@@ -71,7 +71,8 @@ var retailigence = function(key, id, onSuccess, onFail){
                 return true;
             },
             error: function(data) {
-                console.log("retailigence.js: GET failed with error" + data);
+                console.log("retailigence.js: GET failed with error below");
+                console.log(data);
                 errorMessage = data;
                 isTasking = false;
                 doFail();
