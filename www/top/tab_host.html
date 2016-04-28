@@ -1,15 +1,16 @@
 <ons-page ng-controller="tabHostController">
-    <div id="HomePage">
-        <ons-toolbar fixed-style="true">
+    <div id="ToolBar">
+        <ons-toolbar id="ToolBar" fixed-style="true">
             <div class="left">
                 <ons-toolbar-button ng-click="menu.toggleMenu()">
-                    <ons-icon icon="ion-navicon" style="font-size: 32px; width: 1em;"></ons-icon>
+                    <ons-icon id="Hamburger" icon="ion-navicon" style="font-size: 32px; width: 1em;"></ons-icon>
                 </ons-toolbar-button>
             </div>
-            <div class="center">Frugality</div>
+            <div id="Title" class="center">Frugality</div>
         </ons-toolbar>
-
-        <ons-tabbar var="tabHost" position="top">
+    </div>
+    <div id="TabBar">
+        <ons-tabbar id="TabBar" var="tabHost" position="top">
             <ons-tab page="top/tabs/search.html" active="true">
                 <ons-icon icon="ion-search"></ons-icon>
                 <span style="font-size: 14px"></span>
