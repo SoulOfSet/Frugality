@@ -6,12 +6,12 @@ var itemToAdd;
 var currentItem;
 var queueActive = false;
 var queueItem;
-var queueType; 
+var queueType;
 var queueItemName;
 //home.html functions
 app.controller("tabHostController", function($scope, $cordovaBarcodeScanner) {
     document.addEventListener('ons-tabbar:init', function(event) {
-    //tabHost.setActiveTab(1);
+        //tabHost.setActiveTab(1);
     });
     var data = localStorage.getItem("hasRun");
     if (data == "false") {
@@ -19,20 +19,20 @@ app.controller("tabHostController", function($scope, $cordovaBarcodeScanner) {
             dialog.show();
         });
     }
-    $scope.openScanner = function(){
+    $scope.openScanner = function() {
         $cordovaBarcodeScanner
-          .scan()
-          .then(function(barcodeData) {
-              console.log(data);
+            .scan()
+            .then(function(barcodeData) {
+                console.log(data);
                 queueActive = true;
                 queueItem = barcodeData.text;
                 queueType = "productID";
                 queueItemName = barcodeData.text;
                 tabHost.setActiveTab(0);
-            // Success! Barcode data is here
-          }, function(error) {
-            // An error occurred
-          });
+                // Success! Barcode data is here
+            }, function(error) {
+                // An error occurred
+            });
     }
 });
 
@@ -116,18 +116,20 @@ app.controller("searchController", function($scope) {
         };
         localStorage.setItem("lists", JSON.stringify(lists));
     }
-    
-    if(localStorage.getItem("radius") === null){
+
+    if (localStorage.getItem("radius") === null) {
         updateRadius("30");
     }
-    
+
     $("#ResultBar").hide();
 
 
-    $scope.viewMap = function(){
-        parentNavigator.app.loadUrl("https://www.google.com/maps/embed/v1/view?zoom=14&center=" + $scope.latitude + "," + $scope.longitude + "&key=AIzaSyDxRkOfiwcsRNjpJzoPI0ej8AvG4VYnnIo'");
+    $scope.viewMap = function() {
+        window.open("https://www.google.com/maps/embed/v1/view?zoom=14&center=" + $scope.latitude + "," + $scope.longitude + "&key=AIzaSyDxRkOfiwcsRNjpJzoPI0ej8AvG4VYnnIo", '_system');
     };
-    
+
+
+
     $scope.popFilter = function() {
         ons.createPopover('top/tabs/filterPopOver.html').then(function(popover) {
             $scope.popover = popover;
@@ -173,7 +175,6 @@ app.controller("searchController", function($scope) {
                                 });
                             }
                         }
-
                         break;
                 }
             }
@@ -196,6 +197,7 @@ app.controller("searchController", function($scope) {
         $scope.img = data.product.images[1].ImageInfo.link;
         $scope.latitude = data.location.location.latitude;
         $scope.longitude = data.location.location.longitude;
+        $scope.description = data.product.descriptionLong;
 
         //Product category designation
         if (data.product.productCategory === undefined) {
@@ -215,79 +217,93 @@ app.controller("searchController", function($scope) {
         var tempPhone = numData.toString();
         $scope.phoneNum = '(' + tempPhone.substr(0, 3) + ')' + ' ' + tempPhone.substr(3, 3) + '-' + tempPhone.substr(6, 4);
         //end phone formatting
-        
+
         //Store hours formatting
-		var day;
+        var day;
         var hData = data.location.hours; // pulls info from the database
-		var sepData = hData.split(","); // creates an array of 7 data items
-		var fHours = "";
-		
-		for(var i = 0; i < 7; i++) //trverses through the array
-		{
-			var dData = sepData[i];
-			var daySwitch = dData.substr(0,1); // pulls the first character in an item
-			                                   // this number represents the day of the week
-			
-			switch(daySwitch)
-			{
-			    case "1":
-			        day = "Sun: ";
-			        break;
-			    case "2":
-			        day = "Mon: ";
-			        break;
-			    case "3":
-			        day = "Tue: ";
-			        break;
-			    case "4":
-				    day = "Wed: ";
-				    break;
-			    case "5":
-				    day = "Thur: ";
-				    break;
-			    case "6":
-				    day = "Fri: ";
-				    break;
-			    case "7":
-				    day = "Sat: ";
-				    break;	
-			}
-			// This section pulls the rest of the info for open time and close time
-			
-			if(dData.length == 11) // a situation where the store is open in the range of 1am to 9am
-			{
-			    oTime = dData.substr(2,4);
-			    cTime = dData.substr(7,4);
-			}
-			else if(dData.length == 12 && dData.substr(3,1) == ":") // open in range of 1am to 23:59
-			{
-			    oTime = dData.substr(2,4);
-			    cTime = dData.substr(7,5); 
-			}
-			else if(dData.length == 12 && dData.substr(7,1) == ":") // opens in age of 10am to 9am
-			{
-			    oTime = dData.substr(2,5);
-			    cTime = dData.substr(8,4); 
-			}
-			else                                                    //opens in range of 10am to 23:59
-			{
-			    oTime = dData.substr(2,5);
-			    cTime = dData.substr(8,5);
-			}
-			
-			var dBlock = day + oTime + " - " + cTime + " ";        //combines data to form 1 day of data
-			
-			fHours = fHours + dBlock;                              //combines 7 days of data
-			console.log(fHours);                                   // 
-			
-			
-			
-		}
-        
-         $scope.hours = fHours; //sends formatted data to activity
+        var sepData = hData.split(","); // creates an array of 7 data items
+        var fHours = "";
+
+
+
+        for (var i = 0; i < 7; i++) //trverses through the array
+        {
+            var dData = sepData[i];
+            var daySwitch = dData.substr(0, 1); // pulls the first character in an item
+            // this number represents the day of the week
+
+            switch (daySwitch) {
+                case "1":
+                    day = "Sun: ";
+                    break;
+                case "2":
+                    day = "Mon: ";
+                    break;
+                case "3":
+                    day = "Tue: ";
+                    break;
+                case "4":
+                    day = "Wed: ";
+                    break;
+                case "5":
+                    day = "Thur: ";
+                    break;
+                case "6":
+                    day = "Fri: ";
+                    break;
+                case "7":
+                    day = "Sat: ";
+                    break;
+            }
+            // This section pulls the rest of the info for open time and close time
+            console.log(sepData);
+            var dArray = sepData[i].split(":");
+            
+            console.log(dArray);
+            var oHour = parseInt(dArray[1], 10);
+            var oMinute = dArray[2];
+            var cHour = parseInt(dArray[3],10);
+            var cMinute = dArray[4];
+            var ctimeOfDay;
+            var otimeOfDay;
+            
+            console.log(oHour + " " + oMinute + " " + cHour +  " " + cMinute);
+            if (oHour > 12) {
+                oHour = oHour - 12;
+                otimeOfDay = "pm";
+            } else if (oHour == 0) {
+                oHour = 12;
+                otimeOfDay = "am";
+            } else {
+                otimeOfDay = "am";
+
+            }
+
+
+            if (cHour > 12) {
+                cHour = cHour - 12;
+                ctimeOfDay = "pm";
+            } else if (cHour == 0) {
+                cHour = 12;
+                ctimeOfDay = "am";
+            } else {
+                ctimeOfDay = "am";
+
+            }
+
+
+            var dBlock = day + oHour + ":" + oMinute + otimeOfDay + " - " + cHour + ":" + cMinute + ctimeOfDay + "  "; //combines data to form 1 day of data
+
+            fHours = fHours + dBlock; //combines 7 days of data
+            console.log(fHours); // 
+
+        }
+
+
+        $scope.hours = fHours; //sends formatted data to activity
         //$scope.hours = data.location.hours;
         //end hours formatting1
-        
+
         itemToAdd = $scope.name;
         downloadJSON(data.product.inventory, function(data) {
 
@@ -330,6 +346,11 @@ app.controller("searchController", function($scope) {
         data.editExtraParam("replace", "range", localStorage.getItem("radius"));
         data.editExtraParam("add", "pageSize", "30");
         data.editExtraParam("add", "expandResults", "true");
+        if (localStorage.getItem("excludeAdultContent") !== null) {
+            data.editExtraParam("replace", "excludeAdultContent", localStorage.getItem("excludeAdultContent"));
+        } else {
+            data.editExtraParam("replace", "excludeAdultContent", "true");
+        }
         data.setSearchType(type);
         if (localStorage.getItem("prefLocationType") != null) {
             var locationType = localStorage.getItem("prefLocationType"); //Get location type
@@ -342,7 +363,7 @@ app.controller("searchController", function($scope) {
                 data.setLocation(localStorage.getItem("latitude"), localStorage.getItem("longitude"));
             }
         }
-        if(query == null){
+        if (query == null) {
             query = $('#TxtSearch').val();
             cleanName = $('#TxtSearch').val();
         }
@@ -433,7 +454,9 @@ app.controller("searchController", function($scope) {
                         currentList.cities[filterData.city] += "/" + i;
 
                     });
+
                     $scope.currData = currentList;
+
                     $scope.$apply();
                     console.log(currentList);
                     console.log("swag");
@@ -444,11 +467,11 @@ app.controller("searchController", function($scope) {
             }
         });
     };
-    if(queueActive == true){
+    if (queueActive == true) {
         $scope.search(queueType, queueItem, queueItemName);
         queueActive = false;
         queueItem = null;
-        queueType = null; 
+        queueType = null;
         queueItemName = null;
     }
 
@@ -466,10 +489,28 @@ app.controller("settingsController", function($scope) {
             dialog.show();
         });
     }
-    $scope.clearLocalData = function(){
+    $scope.clearLocalData = function() {
         localStorage.clear();
         location.reload();
     }
+    $scope.setAdultContent = function() {
+        ons.notification.confirm({
+            message: 'Allow adult content?',
+            modifier: 'material',
+            buttonLabels: ['No', 'Yes'],
+            callback: function(idx) {
+                switch (idx) {
+                    case 0:
+                        localStorage.setItem("excludeAdultContent", "true");
+                        break;
+                    case 1:
+                        localStorage.setItem("excludeAdultContent", "false");
+                        break;
+                }
+            }
+        });
+    }
+
 });
 
 //filterPopover.html functions
@@ -509,7 +550,7 @@ app.controller("filterPopController", function($scope) {
 //watching.html functions
 app.controller("watchListController", function($scope) {
     $scope.watching = JSON.parse(localStorage.getItem("lists"));
-    $scope.watchItemTap = function(data){
+    $scope.watchItemTap = function(data) {
         console.log(data);
         queueActive = true;
         queueItem = data.productID;
@@ -517,17 +558,27 @@ app.controller("watchListController", function($scope) {
         queueItemName = data.name;
         tabHost.setActiveTab(0);
     };
-    
-    $scope.removeItem = function(data){
-        console.log("swipe");
-        console.log(data);
-        var itemList = JSON.parse(localStorage.getItem("lists"));
-        var newList = $.grep(itemList, function(e){ 
-             return e.productID != data.productID; 
+
+    $scope.removeItem = function(data) {
+        ons.notification.confirm({
+            message: 'Remove item ' + data.name + ' from watch list?',
+            modifier: 'material',
+            callback: function(idx) {
+                switch (idx) {
+                    case 0:
+                        break;
+                    case 1:
+                        var itemList = JSON.parse(localStorage.getItem("lists"));
+                        var newList = $.grep(itemList, function(e) {
+                            return e.productID != data.productID;
+                        });
+                        console.log(newList);
+                        localStorage.setItem("lists", JSON.stringify(newList));
+                        $scope.watching = JSON.parse(localStorage.getItem("lists"));
+                        break;
+                }
+            }
         });
-        console.log(newList);
-        localStorage.setItem("lists", JSON.stringify(newList));
-        $scope.watching = JSON.parse(localStorage.getItem("lists"));
+
     };
 });
-

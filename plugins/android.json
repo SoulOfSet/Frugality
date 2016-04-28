@@ -7,14 +7,26 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.onsen.helloworld"
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.soulsoftworks.frugality"
         },
-        "phonegap-plugin-barcodescanner": {
-            "PACKAGE_NAME": "io.onsen.helloworld"
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.soulsoftworks.frugality"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.soulsoftworks.frugality"
         },
         "cordova-plugin-inappbrowser": {
-            "PACKAGE_NAME": "io.onsen.helloworld"
+            "PACKAGE_NAME": "com.soulsoftworks.frugality"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.soulsoftworks.frugality"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.soulsoftworks.frugality"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "com.soulsoftworks.frugality"
         }
     },
     "dependent_plugins": {}
