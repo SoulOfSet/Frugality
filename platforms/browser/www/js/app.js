@@ -216,6 +216,7 @@ app.controller("searchController", function($scope) {
         var cTime;
         var numData = data.location.phone;
         var tempPhone = numData.toString();
+        $scope.realPhoneNum = data.location.phone;
         $scope.phoneNum = '(' + tempPhone.substr(0, 3) + ')' + ' ' + tempPhone.substr(3, 3) + '-' + tempPhone.substr(6, 4);
         //end phone formatting
 
