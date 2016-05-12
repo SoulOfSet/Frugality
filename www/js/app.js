@@ -461,7 +461,6 @@ app.controller("searchController", function($scope) {
 
                     $scope.$apply();
                     console.log(currentList);
-                    console.log("swag");
                 }
 
             } else {
